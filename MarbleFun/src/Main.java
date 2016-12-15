@@ -6,7 +6,7 @@ public class Main {
 	public Main()
 	{
 		if(!glfwInit()){
-			System.out.println("GLFW failed to intialize");
+			System.out.println("GLFW failed to intialize..");
 			System.exit(1);
 		}
 		
