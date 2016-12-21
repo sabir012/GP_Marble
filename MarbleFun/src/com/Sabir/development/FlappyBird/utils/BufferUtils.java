@@ -25,7 +25,7 @@ public class BufferUtils {
 		return buffer;
 	}
 	
-	public static IntBuffer createFloatBuffer(int[] array){
+	public static IntBuffer createIntBuffer(int[] array){
 		IntBuffer buffer = ByteBuffer.allocate(array.length * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
 		buffer.put(array);
 		buffer.flip();

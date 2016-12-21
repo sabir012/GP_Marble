@@ -20,7 +20,7 @@ public class ShaderUtils {
 		int vertID = glCreateShader(GL_VERTEX_SHADER);
 		int fragID = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(vertID,vert);
-		glShaderSource(fragID,vert);
+		glShaderSource(fragID,frag);
 		
 		glCompileShader(vertID);
 		if(glGetShaderi(vertID,GL_COMPILE_STATUS) == GL_FALSE){
