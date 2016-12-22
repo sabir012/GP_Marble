@@ -6,9 +6,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
-import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
@@ -18,9 +16,9 @@ public class Window {
     private int width;
 
     private int height;
-    
+
     private long windowHandle;
-    
+
     private GLFWErrorCallback errorCallback;
 
     private GLFWKeyCallback keyCallback;
@@ -70,7 +68,7 @@ public class Window {
                 Window.this.width = width;
                 Window.this.height = height;
                 Window.this.setResized(true);
-            }           
+            }
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
@@ -102,25 +100,30 @@ public class Window {
 
         // Make the window visible
         glfwShowWindow(windowHandle);
-        
+
         GL.createCapabilities();
 
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glEnable(GL_DEPTH_TEST);
     }
-    
+
+    public long getWindowHandle() {
+        return windowHandle;
+    }
+
     public void setClearColor(float r, float g, float b, float alpha) {
         glClearColor(r, g, b, alpha);
     }
-    
+
     public boolean isKeyPressed(int keyCode) {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
-    
+
     public boolean windowShouldClose() {
         return glfwWindowShouldClose(windowHandle);
     }
-    
+
     public String getTitle() {
         return title;
     }
@@ -132,7 +135,7 @@ public class Window {
     public int getHeight() {
         return height;
     }
-    
+
     public boolean isResized() {
         return resized;
     }
