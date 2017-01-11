@@ -38,10 +38,11 @@ public class Ball extends GameItem implements Gravitable{
 	}
     
     public void handleBallCollision(Ball ball){
-    	if(true){         // isCollide
-    		//Vector3f displacement = (this.pos - ball.pos).normalize();
-    		//this.velocity -=2*displacement * this.velocity.dot(displacement);
-    		//ball.velocity -=2*displacement * ball.velocity.dot(displacement);
+    	if(this.isCollide(ball)){
+    		Vector3f displacement = this.getPosition().sub(ball.getPosition()).normalize();
+       		
+    		this.velocity = this.velocity.sub(displacement.mul(2).mul(this.velocity.dot(displacement)));
+    		ball.velocity = ball.velocity.sub(displacement.mul(2).mul(ball.velocity.dot(displacement)));
     	} 
     }
 
