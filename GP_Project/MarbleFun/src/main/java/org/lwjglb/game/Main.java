@@ -6,11 +6,10 @@ import org.lwjglb.engine.IGameLogic;
 public class Main {
  
     public static void main(String[] args) {
-    	System.setProperty("java.awt.headless", "true");
         try {
             boolean vSync = true;
             IGameLogic gameLogic = new DummyGame();
-            GameEngine gameEng = new GameEngine("GAME", 600, 480, vSync, gameLogic);
+            GameEngine gameEng = new GameEngine("GAME", 800, 600, vSync, gameLogic);
             gameEng.start();
         } catch (Exception excp) {
             excp.printStackTrace();

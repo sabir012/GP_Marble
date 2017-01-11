@@ -25,6 +25,7 @@ public class Mesh {
     private Texture texture;
 
     private Vector3f colour;
+
     
     public Mesh(float[] positions, float[] textCoords, float[] normals, int[] indices) {
         colour = DEFAULT_COLOUR;

@@ -3,6 +3,9 @@ package org.lwjglb.game;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
+
+import java.util.Random;
+
 import org.lwjglb.engine.GameItem;
 import org.lwjglb.engine.IGameLogic;
 import org.lwjglb.engine.MouseInput;
@@ -11,9 +14,21 @@ import org.lwjglb.engine.graph.Camera;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.OBJLoader;
 import org.lwjglb.engine.graph.Texture;
+import org.lwjglb.game.objects.Ball;
 
 public class DummyGame implements IGameLogic {
 
+	//
+	private final float GRAVITY = 8.0f;
+	private final float BOX_SIZE = 12.0f;
+	private final float TIME_BETWEEN_UPDATES = 0.0001f;
+	private final int TIMER_MS = 25;
+	
+	private final int MAX_OCTREE_DEPTH = 6;
+	private final int MIN_BALLS_PER_OCTREE = 3;
+	private final int MAX_BALLS_PER_OCTREE = 6;
+	//
+	
     private static final float MOUSE_SENSITIVITY = 0.2f;
 
     private final Vector3f cameraInc;
@@ -35,15 +50,25 @@ public class DummyGame implements IGameLogic {
     @Override
     public void init(Window window) throws Exception {
         renderer.init(window);
-
-        Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
-        //Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
+        
+        Mesh mesh = OBJLoader.loadMesh("/models/tennisball.obj");
+        //Mesh mesh = OBJLoader.loadMesh("/models/compass.obj");
+        Mesh mesh2 = OBJLoader.loadMesh("/models/soccer_ball.obj");
+        
         Texture texture = new Texture("/textures/grassblock.png");
-        mesh.setTexture(texture);
-        GameItem gameItem = new GameItem(mesh);
-        gameItem.setScale(0.5f);
-        gameItem.setPosition(0, 0, -2);
-        gameItems = new GameItem[]{gameItem};
+        Texture texture2 = new Texture("/textures/rock.png");
+        
+        mesh.setTexture(texture2);
+        Ball gameItem = new Ball(mesh);
+        gameItem.setScale(0.005f);
+        gameItem.setPosition(0f, -1f, -5);
+        
+        mesh2.setTexture(texture);
+        Ball gameItem2 = new Ball(mesh2);
+        gameItem2.setScale(0.005f);
+        gameItem2.setPosition(0f, 1.5f, -5);
+        
+        gameItems = new GameItem[]{gameItem,gameItem2};
     }
 
     @Override
@@ -76,6 +101,25 @@ public class DummyGame implements IGameLogic {
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
+        	
+            // Update rotation angle
+//            float rotation = gameItems[0].getRotation().x + 1f;
+//            if (rotation > 360) {
+//                rotation = 0;
+//            }
+//            gameItems[0].setRotation(rotation, 0, 0);
+            
+             Ball ball1 = (Ball)gameItems[0];
+             Ball ball2 = (Ball)gameItems[1];
+             
+             ball1.setRadius(0.4f);
+             ball2.setRadius(0.7f);
+             
+             boolean result = ball1.isCollide(ball2);
+             System.out.println(result);
+        
+            gameItems[0].setPosition(0, gameItems[0].getPosition().y+0.005f, gameItems[0].getPosition().z);
+            System.out.println(gameItems[0].getPosition().y);
     }
 
     @Override
@@ -90,5 +134,4 @@ public class DummyGame implements IGameLogic {
             gameItem.getMesh().cleanUp();
         }
     }
-
 }

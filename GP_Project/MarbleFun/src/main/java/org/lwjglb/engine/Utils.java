@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.joml.Vector3f;
+
 public class Utils {
 
     public static String loadResource(String fileName) throws Exception {

@@ -2,8 +2,9 @@ package org.lwjglb.engine;
 
 import org.joml.Vector3f;
 import org.lwjglb.engine.graph.Mesh;
+import org.lwjglb.game.objects.Ball;
 
-public class GameItem {
+public abstract class GameItem {
 
     private final Mesh mesh;
     
@@ -47,6 +48,8 @@ public class GameItem {
         this.rotation.y = y;
         this.rotation.z = z;
     }
+    
+    public abstract boolean isCollide(Ball ball);
     
     public Mesh getMesh() {
         return mesh;
