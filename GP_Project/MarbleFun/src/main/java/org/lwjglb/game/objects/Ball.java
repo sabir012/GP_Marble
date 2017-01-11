@@ -56,7 +56,6 @@ public class Ball extends GameItem implements Gravitable{
   	                           (currentBallPosition.z - ballPosition.z) * (currentBallPosition.z - ballPosition.z));
       
       System.out.println("Distance: "+distance);
-      System.out.println("Radius: "+this.radius+" ---- "+ball.radius);
       
       return distance < (this.radius + ball.radius); 
 	}
