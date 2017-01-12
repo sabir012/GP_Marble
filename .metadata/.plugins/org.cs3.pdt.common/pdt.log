@@ -1,0 +1,16 @@
+pdt: ----------------------------------
+pdt: Thu Jan 12 17:07:52 CET 2017
+pdt: ----------------------------------
+pdt: set debug output to LOGFILE
+pdt: ----------------------------------
+pdt: Thu Jan 12 17:07:52 CET 2017
+pdt: ----------------------------------
+pdt: set debug output to LOGFILE
+pdt: WARNING - 12/01 17:07:57 - Prolog Process Default Process Work: Prolog warnings and errors during initialization:
+Location: /tmp/socketProcess3747675166995989355.tmp:29
+Message: '<meta-call>'/1: Undefined procedure: guitracer/0
+
+Location: /tmp/socketProcess3747675166995989355.tmp:29
+Message: Goal (directive) failed: user: (current_prolog_flag(dialect,swi)->guitracer;true)
+
+
