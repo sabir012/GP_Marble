@@ -11,10 +11,13 @@ import org.lwjglb.engine.IGameLogic;
 import org.lwjglb.engine.MouseInput;
 import org.lwjglb.engine.Window;
 import org.lwjglb.engine.graph.Camera;
+import org.lwjglb.engine.graph.Material;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.OBJLoader;
 import org.lwjglb.engine.graph.Texture;
 import org.lwjglb.game.objects.Ball;
+import org.lwjglb.engine.graph.PointLight;
+import org.lwjglb.engine.graph.DirectionalLight;
 
 public class DummyGame implements IGameLogic {
 
@@ -38,6 +41,14 @@ public class DummyGame implements IGameLogic {
     private final Camera camera;
 
     private GameItem[] gameItems;
+    
+    private Vector3f ambientLight;
+
+    private PointLight pointLight;
+
+    private DirectionalLight directionalLight;
+
+    private float lightAngle;
 
     private static final float CAMERA_POS_STEP = 0.05f;
 
@@ -45,20 +56,27 @@ public class DummyGame implements IGameLogic {
         renderer = new Renderer();
         camera = new Camera();
         cameraInc = new Vector3f(0, 0, 0);
+        lightAngle = -90;
     }
 
     @Override
     public void init(Window window) throws Exception {
         renderer.init(window);
         
+        float reflectance = 1f;
+        
         Mesh mesh = OBJLoader.loadMesh("/models/tennisball.obj");
         //Mesh mesh = OBJLoader.loadMesh("/models/compass.obj");
         Mesh mesh2 = OBJLoader.loadMesh("/models/soccer_ball.obj");
         
-        Texture texture = new Texture("/textures/grassblock.png");
-        Texture texture2 = new Texture("/textures/rock.png");
+        Texture texture = new Texture("/textures/marbleRed.png");
+     //   Texture texture2 = new Texture("/textures/rock.png");
         
-        mesh.setTexture(texture2);
+        Material material = new Material(texture, reflectance);
+
+        mesh.setMaterial(material);
+        mesh2.setMaterial(material);
+   //     mesh.setTexture(texture2);
         Ball gameItem = new Ball(mesh);
         gameItem.setScale(0.005f);
         gameItem.setPosition(0f, -1f, -5);
@@ -68,7 +86,20 @@ public class DummyGame implements IGameLogic {
         gameItem2.setScale(0.005f);
         gameItem2.setPosition(0f, 1.5f, -5);
         
+        
         gameItems = new GameItem[]{gameItem,gameItem2};
+        
+        ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+        Vector3f lightColour = new Vector3f(1, 1, 1);
+        Vector3f lightPosition = new Vector3f(0, 0, 1);
+        float lightIntensity = 1.0f;
+        pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
+        PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+        pointLight.setAttenuation(att);
+
+        lightPosition = new Vector3f(-1, 0, 0);
+        lightColour = new Vector3f(1, 1, 1);
+        directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
     }
 
     @Override
@@ -88,6 +119,12 @@ public class DummyGame implements IGameLogic {
             cameraInc.y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_X)) {
             cameraInc.y = 1;
+        }
+        float lightPos = pointLight.getPosition().z;
+        if (window.isKeyPressed(GLFW_KEY_N)) {
+            this.pointLight.getPosition().z = lightPos + 0.1f;
+        } else if (window.isKeyPressed(GLFW_KEY_M)) {
+            this.pointLight.getPosition().z = lightPos - 0.1f;
         }
     }
 
@@ -124,7 +161,7 @@ public class DummyGame implements IGameLogic {
 
     @Override
     public void render(Window window) {
-        renderer.render(window, camera, gameItems);
+    	renderer.render(window, camera, gameItems, ambientLight, pointLight, directionalLight);
     }
 
     @Override
