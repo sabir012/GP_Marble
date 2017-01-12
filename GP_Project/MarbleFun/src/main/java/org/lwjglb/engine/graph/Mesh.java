@@ -21,6 +21,8 @@ public class Mesh {
     private final List<Integer> vboIdList;
 
     private final int vertexCount;
+    
+    private Material material;
 
     private Texture texture;
 
@@ -73,6 +75,14 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
+    
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
 
     public boolean isTextured() {
         return this.texture != null;
@@ -103,6 +113,7 @@ public class Mesh {
     }
 
     public void render() {
+    	Texture texture = material.getTexture();
         if (texture != null) {
             // Activate firs texture bank
             glActiveTexture(GL_TEXTURE0);
@@ -136,6 +147,7 @@ public class Mesh {
         }
 
         // Delete the texture
+        Texture texture = material.getTexture();
         if (texture != null) {
             texture.cleanup();
         }

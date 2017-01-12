@@ -29,11 +29,32 @@ public class ShaderProgram {
     public void createUniform(String uniformName) throws Exception {
         int uniformLocation = glGetUniformLocation(programId, uniformName);
         if (uniformLocation < 0) {
-            throw new Exception ("Could not find uniform:" + uniformName);
+            throw new Exception("Could not find uniform:" + uniformName);
         }
         uniforms.put(uniformName, uniformLocation);
     }
-    
+
+    public void createPointLightUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".position");
+        createUniform(uniformName + ".intensity");
+        createUniform(uniformName + ".att.constant");
+        createUniform(uniformName + ".att.linear");
+        createUniform(uniformName + ".att.exponent");
+    }
+
+    public void createDirectionalLightUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".direction");
+        createUniform(uniformName + ".intensity");
+    }
+
+    public void createMaterialUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".useColour");
+        createUniform(uniformName + ".reflectance");
+    }
+
     public void setUniform(String uniformName, Matrix4f value) {
         // Dump the matrix into a float buffer
         FloatBuffer fb = BufferUtils.createFloatBuffer(16);
@@ -45,8 +66,34 @@ public class ShaderProgram {
         glUniform1i(uniforms.get(uniformName), value);
     }
 
+    public void setUniform(String uniformName, float value) {
+        glUniform1f(uniforms.get(uniformName), value);
+    }
+
     public void setUniform(String uniformName, Vector3f value) {
-        glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z );
+        glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
+    }
+
+    public void setUniform(String uniformName, PointLight pointLight) {
+        setUniform(uniformName + ".colour", pointLight.getColor());
+        setUniform(uniformName + ".position", pointLight.getPosition());
+        setUniform(uniformName + ".intensity", pointLight.getIntensity());
+        PointLight.Attenuation att = pointLight.getAttenuation();
+        setUniform(uniformName + ".att.constant", att.getConstant());
+        setUniform(uniformName + ".att.linear", att.getLinear());
+        setUniform(uniformName + ".att.exponent", att.getExponent());
+    }
+
+    public void setUniform(String uniformName, DirectionalLight dirLight) {
+        setUniform(uniformName + ".colour", dirLight.getColor());
+        setUniform(uniformName + ".direction", dirLight.getDirection());
+        setUniform(uniformName + ".intensity", dirLight.getIntensity());
+    }
+
+    public void setUniform(String uniformName, Material material) {
+        setUniform(uniformName + ".colour", material.getColour());
+        setUniform(uniformName + ".useColour", material.isTextured() ? 0 : 1);
+        setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
     public void createVertexShader(String shaderCode) throws Exception {
@@ -78,13 +125,20 @@ public class ShaderProgram {
     public void link() throws Exception {
         glLinkProgram(programId);
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
-            throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024));        }
+            throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024));
+        }
+
+        if (vertexShaderId != 0) {
+            glDetachShader(programId, vertexShaderId);
+        }
+        if (fragmentShaderId != 0) {
+            glDetachShader(programId, fragmentShaderId);
+        }
 
         glValidateProgram(programId);
         if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
             System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
         }
-
     }
 
     public void bind() {
@@ -98,12 +152,6 @@ public class ShaderProgram {
     public void cleanup() {
         unbind();
         if (programId != 0) {
-            if (vertexShaderId != 0) {
-                glDetachShader(programId, vertexShaderId);
-            }
-            if (fragmentShaderId != 0) {
-                glDetachShader(programId, fragmentShaderId);
-            }
             glDeleteProgram(programId);
         }
     }
