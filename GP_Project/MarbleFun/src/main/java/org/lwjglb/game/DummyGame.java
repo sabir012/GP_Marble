@@ -56,7 +56,7 @@ public class DummyGame implements IGameLogic {
         renderer = new Renderer();
         camera = new Camera();
         cameraInc = new Vector3f(0, 0, 0);
-        lightAngle = -90;
+        lightAngle = 10;
     }
 
     @Override
@@ -65,9 +65,9 @@ public class DummyGame implements IGameLogic {
         
         float reflectance = 1f;
         
-        Mesh mesh = OBJLoader.loadMesh("/models/tennisball.obj");
+        Mesh mesh = OBJLoader.loadMesh("/models/marble1.obj");
         //Mesh mesh = OBJLoader.loadMesh("/models/compass.obj");
-        Mesh mesh2 = OBJLoader.loadMesh("/models/soccer_ball.obj");
+        Mesh mesh2 = OBJLoader.loadMesh("/models/marble1.obj");
         
         Texture texture = new Texture("/textures/marbleRed.png");
      //   Texture texture2 = new Texture("/textures/rock.png");
@@ -78,18 +78,18 @@ public class DummyGame implements IGameLogic {
         mesh2.setMaterial(material);
    //     mesh.setTexture(texture2);
         Ball gameItem = new Ball(mesh);
-        gameItem.setScale(0.005f);
+        gameItem.setScale(0.5f);
         gameItem.setPosition(0f, -1f, -5);
         
         mesh2.setTexture(texture);
         Ball gameItem2 = new Ball(mesh2);
-        gameItem2.setScale(0.005f);
+        gameItem2.setScale(0.5f);
         gameItem2.setPosition(0f, 1.5f, -5);
         
         
         gameItems = new GameItem[]{gameItem,gameItem2};
         
-        ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+        ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
         Vector3f lightPosition = new Vector3f(0, 0, 1);
         float lightIntensity = 1.0f;
@@ -97,7 +97,7 @@ public class DummyGame implements IGameLogic {
         PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
         pointLight.setAttenuation(att);
 
-        lightPosition = new Vector3f(-1, 0, 0);
+        lightPosition = new Vector3f(0, 1, 1);
         lightColour = new Vector3f(1, 1, 1);
         directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
     }
@@ -120,12 +120,12 @@ public class DummyGame implements IGameLogic {
         } else if (window.isKeyPressed(GLFW_KEY_X)) {
             cameraInc.y = 1;
         }
-        float lightPos = pointLight.getPosition().z;
+  /*      float lightPos = pointLight.getPosition().z;
         if (window.isKeyPressed(GLFW_KEY_N)) {
             this.pointLight.getPosition().z = lightPos + 0.1f;
         } else if (window.isKeyPressed(GLFW_KEY_M)) {
             this.pointLight.getPosition().z = lightPos - 0.1f;
-        }
+        }*/
     }
 
     @Override
