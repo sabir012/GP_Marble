@@ -7,11 +7,20 @@ import org.lwjglb.engine.graph.Mesh;
 
 public class Track extends GameItem {
     
-    private Vector2f slope; // 0 to 90
+    private float slope; // 0 to 90
     private Material material;
     
 	private Vector3f minCorner;
 	private Vector3f maxCorner;
+	
+	public Track(Mesh mesh) {
+		super(mesh);
+		
+		this.minCorner = mesh.minXMaxY;
+		this.maxCorner = mesh.maxXMinY;
+		slope = (float)Math.toDegrees(Math.atan((minCorner.y - maxCorner.y)/(minCorner.x - maxCorner.x)));
+		this.material = Material.GRAS;
+	}
 	
     public Track(Mesh mesh, Material material,Vector3f min, Vector3f max) {
         super(mesh);
@@ -21,7 +30,7 @@ public class Track extends GameItem {
         this.minCorner = min;
 		this.maxCorner = max;
 		
-        slope = new Vector2f();
+        slope = 0;
     }
      
  
@@ -43,9 +52,8 @@ public class Track extends GameItem {
     	  return distance < ball.getRadius();
 	}
      
-    public void setSlope(float x, float y) {
-        slope.x = x;
-        slope.y = y;
+    public void setSlope(float slope) {
+        this.slope = slope;
     }
     
 	public void setMinCorner(Vector3f min){
@@ -64,8 +72,11 @@ public class Track extends GameItem {
 		return this.maxCorner;
 	}
      
-    public Vector2f getSlope() {
+    public float getSlope() {
         return slope;
+    }
+    public Material getMaterial() {
+        return this.material;
     }
  
 }

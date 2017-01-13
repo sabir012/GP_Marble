@@ -4,8 +4,12 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -13,7 +17,6 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh {
-
     private static final Vector3f DEFAULT_COLOUR = new Vector3f(1.0f, 1.0f, 1.0f);
 
     private final int vaoId;
@@ -27,9 +30,17 @@ public class Mesh {
     private Texture texture;
 
     private Vector3f colour;
-
+    
+    public Vector3f posOnObject;
+    public Vector3f minXMaxY;
+    public Vector3f maxXMinY;
     
     public Mesh(float[] positions, float[] textCoords, float[] normals, int[] indices) {
+    	
+    	posOnObject = new Vector3f(positions[3],positions[4],positions[5]);
+    	minXMaxY  = GetMinXMaxY(positions);
+    	maxXMinY = GetMaxXMinY(positions);
+    	
         colour = DEFAULT_COLOUR;
         vertexCount = indices.length;
         vboIdList = new ArrayList();
@@ -155,5 +166,41 @@ public class Mesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+    
+    public Vector3f GetMinXMaxY(float[] positions){
+    	float minX = Integer.MAX_VALUE;
+    	float y = 0;
+    	float z = 0;
+    	
+    	for (int i=0;i<positions.length;i++){
+    		if(i % 3 == 0){
+    			if(minX>positions[i]){
+    				minX = positions[i];
+    				y = positions[i+1];
+    				z = positions[i+2];
+    			}
+    		}
+    	}
+    	
+    	return new Vector3f(minX,y,z);
+    }
+    
+    public Vector3f GetMaxXMinY(float[] positions){
+    	float maxX = Integer.MIN_VALUE;
+    	float y = 0;
+    	float z = 0;
+    	
+    	for (int i=0;i<positions.length;i++){
+    		if(i % 3 == 0){
+    			if(maxX<positions[i]){
+    				maxX = positions[i];
+    				y = positions[i+1];
+    				z = positions[i+2];
+    			}
+    		}
+    	}
+    	
+    	return new Vector3f(maxX,y,z);
     }
 }

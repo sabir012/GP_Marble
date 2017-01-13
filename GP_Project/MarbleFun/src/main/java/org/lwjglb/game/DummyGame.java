@@ -16,6 +16,7 @@ import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.OBJLoader;
 import org.lwjglb.engine.graph.Texture;
 import org.lwjglb.game.objects.Ball;
+import org.lwjglb.game.objects.Track;
 import org.lwjglb.engine.graph.PointLight;
 import org.lwjglb.engine.graph.DirectionalLight;
 
@@ -66,29 +67,31 @@ public class DummyGame implements IGameLogic {
         float reflectance = 1f;
         
         Mesh mesh = OBJLoader.loadMesh("/models/marble1.obj");
-        //Mesh mesh = OBJLoader.loadMesh("/models/compass.obj");
+        Mesh trackMesh = OBJLoader.loadMesh("/models/Track.obj");
         Mesh mesh2 = OBJLoader.loadMesh("/models/marble1.obj");
         
         Texture texture = new Texture("/textures/marbleRed.png");
-     //   Texture texture2 = new Texture("/textures/rock.png");
         
         Material material = new Material(texture, reflectance);
 
         mesh.setMaterial(material);
         mesh2.setMaterial(material);
-   //     mesh.setTexture(texture2);
+        trackMesh.setMaterial(material);
+
         Ball gameItem = new Ball(mesh);
-        gameItem.setScale(0.5f);
-        gameItem.setPosition(0f, -1f, -5);
-        
-        mesh2.setTexture(texture);
+        gameItem.setPosition(0f, -0.8f, -2);
+        gameItem.setScale(0.2f);
+       
         Ball gameItem2 = new Ball(mesh2);
-        gameItem2.setScale(0.5f);
-        gameItem2.setPosition(0f, 1.5f, -5);
+        gameItem2.setPosition(0f, 1f, -2);
+        gameItem2.setScale(0.2f);
         
+        Track trackItem = new Track(trackMesh);
+        trackItem.setPosition(0, -1f, -2);
+        trackItem.setScale(0.2f);
         
-        gameItems = new GameItem[]{gameItem,gameItem2};
-        
+        gameItems = new GameItem[]{gameItem,gameItem2,trackItem};
+         
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
         Vector3f lightPosition = new Vector3f(0, 0, 1);
@@ -138,25 +141,27 @@ public class DummyGame implements IGameLogic {
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
-        	
-            // Update rotation angle
-//            float rotation = gameItems[0].getRotation().x + 1f;
-//            if (rotation > 360) {
-//                rotation = 0;
-//            }
-//            gameItems[0].setRotation(rotation, 0, 0);
-            
+
+        
              Ball ball1 = (Ball)gameItems[0];
              Ball ball2 = (Ball)gameItems[1];
+             Track track = (Track)gameItems[2];
              
-             ball1.setRadius(0.4f);
-             ball2.setRadius(0.7f);
+             Vector2f force = ball1.calculateGravityForce(track.getSlope()).mul(0.01f);
+             force = force.add(ball1.calculateTrackFrictionForce(track));
+             ball1.updateVelocity(force, interval);
+             
+             //force = ball2.calculateGravityForce(track.getSlope());
+             //force = force.add(ball2.calculateTrackFrictionForce(track));
+             //ball2.updateVelocity(force, interval);
              
              boolean result = ball1.isCollide(ball2);
              System.out.println(result);
         
-            gameItems[0].setPosition(0, gameItems[0].getPosition().y+0.005f, gameItems[0].getPosition().z);
-            System.out.println(gameItems[0].getPosition().y);
+            //if(!(track.isCollide(ball1) || track.isCollide(ball2))){
+            	//gameItems[0].setPosition(0, gameItems[0].getPosition().y+0.005f, gameItems[0].getPosition().z);
+            	//gameItems[1].setPosition(0, gameItems[1].getPosition().y-0.005f, gameItems[1].getPosition().z);
+            //}
     }
 
     @Override
