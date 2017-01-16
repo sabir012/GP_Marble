@@ -1,34 +1,33 @@
 package org.lwjglb.game.objects;
 
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjglb.engine.GameItem;
+import org.lwjglb.engine.graph.Box;
 import org.lwjglb.engine.graph.Mesh;
 
 public class Track extends GameItem {
     
     private float slope; // 0 to 90
-    private Material material;
-    
-	private Vector3f minCorner;
-	private Vector3f maxCorner;
+    private PhysicalMaterial material;
+	
+	private Box box;
+	
 	
 	public Track(Mesh mesh) {
 		super(mesh);
 		
-		this.minCorner = mesh.minXMaxY;
-		this.maxCorner = mesh.maxXMinY;
-		slope = (float)Math.toDegrees(Math.atan((minCorner.y - maxCorner.y)/(minCorner.x - maxCorner.x)));
-		this.material = Material.GRAS;
+		this.box = mesh.getBox();
+		
+		//slope = (float)Math.toDegrees(Math.atan((minCorner.y - maxCorner.y)/(minCorner.x - maxCorner.x)));
+		this.material = PhysicalMaterial.GRAS;
 	}
 	
-    public Track(Mesh mesh, Material material,Vector3f min, Vector3f max) {
+    public Track(Mesh mesh, PhysicalMaterial material) {
         super(mesh);
         
         this.material = material;
-
-        this.minCorner = min;
-		this.maxCorner = max;
 		
         slope = 0;
     }
@@ -36,13 +35,11 @@ public class Track extends GameItem {
  
 	public boolean isCollide(Ball ball) {
     	// get box closest point to sphere center by clamping
-    	Vector3f minCorner = this.getMinCorner();
-    	Vector3f maxCorner = this.getMaxCorner();
     	Vector3f ballPosition = ball.getPosition();
     	
-    	  float x = Math.max(minCorner.x, Math.min(ballPosition.x, maxCorner.x));
-    	  float y = Math.max(minCorner.y, Math.min(ballPosition.y, maxCorner.y));
-    	  float z = Math.max(minCorner.z, Math.min(ballPosition.z, maxCorner.z));
+    	  float x = Math.max(box.getMinX(), Math.min(ballPosition.x, box.getMaxX()));
+    	  float y = Math.max(box.getMinY(), Math.min(ballPosition.y, box.getMaxY()));
+    	  float z = Math.max(box.getMinZ(), Math.min(ballPosition.z, box.getMaxY()));
 
     	  // this is the same as isPointInsideSphere
     	  double distance = Math.sqrt((x - ballPosition.x) * (x - ballPosition.x) +
@@ -56,26 +53,16 @@ public class Track extends GameItem {
         this.slope = slope;
     }
     
-	public void setMinCorner(Vector3f min){
-		this.minCorner = min;
-	}
-	
-	public void setMaxCorner(Vector3f max){
-		this.maxCorner = max;
-	}
-	
-	public Vector3f getMinCorner(){
-		return this.minCorner;
-	}
-	
-	public Vector3f getMaxCorner(){
-		return this.maxCorner;
-	}
+	@Override
+    public void setScale(float scale) {
+        super.setScale(scale);
+        this.box.setScale(scale);
+    }
      
     public float getSlope() {
         return slope;
     }
-    public Material getMaterial() {
+    public PhysicalMaterial getMaterial() {
         return this.material;
     }
  

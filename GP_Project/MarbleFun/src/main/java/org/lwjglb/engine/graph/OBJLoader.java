@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjglb.engine.GameItemType;
 import org.lwjglb.engine.Utils;
 
 public class OBJLoader {
 
-    public static Mesh loadMesh(String fileName) throws Exception {
+    public static Mesh loadMesh(String fileName, GameItemType gameItemType) throws Exception {
         List<String> lines = Utils.readAllLines(fileName);
         
         List<Vector3f> vertices = new ArrayList<>();
@@ -51,11 +52,11 @@ public class OBJLoader {
                     break;
             }
         }
-        return reorderLists(vertices, textures, normals, faces);
+        return reorderLists(vertices, textures, normals, faces, gameItemType);
     }
 
     private static Mesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
-            List<Vector3f> normList, List<Face> facesList) {
+            List<Vector3f> normList, List<Face> facesList, GameItemType gameItemType) {
 
         List<Integer> indices = new ArrayList();
         // Create position array in the order it has been declared
@@ -79,7 +80,7 @@ public class OBJLoader {
         }
         int[] indicesArr = new int[indices.size()];
         indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
-        Mesh mesh = new Mesh(posArr, textCoordArr, normArr, indicesArr);
+        Mesh mesh = new Mesh(posArr, textCoordArr, normArr, indicesArr, gameItemType);
         return mesh;
     }
 

@@ -7,6 +7,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.util.Random;
 
 import org.lwjglb.engine.GameItem;
+import org.lwjglb.engine.GameItemType;
 import org.lwjglb.engine.IGameLogic;
 import org.lwjglb.engine.MouseInput;
 import org.lwjglb.engine.Window;
@@ -22,17 +23,7 @@ import org.lwjglb.engine.graph.DirectionalLight;
 
 public class DummyGame implements IGameLogic {
 
-	//
-	private final float GRAVITY = 8.0f;
-	private final float BOX_SIZE = 12.0f;
-	private final float TIME_BETWEEN_UPDATES = 0.0001f;
-	private final int TIMER_MS = 25;
-	
-	private final int MAX_OCTREE_DEPTH = 6;
-	private final int MIN_BALLS_PER_OCTREE = 3;
-	private final int MAX_BALLS_PER_OCTREE = 6;
-	//
-	
+
     private static final float MOUSE_SENSITIVITY = 0.2f;
 
     private final Vector3f cameraInc;
@@ -66,9 +57,9 @@ public class DummyGame implements IGameLogic {
         
         float reflectance = 1f;
         
-        Mesh mesh = OBJLoader.loadMesh("/models/marble1.obj");
-        Mesh trackMesh = OBJLoader.loadMesh("/models/Track.obj");
-        Mesh mesh2 = OBJLoader.loadMesh("/models/marble1.obj");
+        Mesh mesh = OBJLoader.loadMesh("/models/marble1.obj",GameItemType.Ball);
+        Mesh trackMesh = OBJLoader.loadMesh("/models/Track.obj",GameItemType.Track);
+        Mesh mesh2 = OBJLoader.loadMesh("/models/marble1.obj",GameItemType.Ball);
         
         Texture texture = new Texture("/textures/marbleRed.png");
         
@@ -79,18 +70,14 @@ public class DummyGame implements IGameLogic {
         trackMesh.setMaterial(material);
 
         Ball gameItem = new Ball(mesh);
-        gameItem.setPosition(0f, -0.8f, -2);
-        gameItem.setScale(0.2f);
-       
-        Ball gameItem2 = new Ball(mesh2);
-        gameItem2.setPosition(0f, 1f, -2);
-        gameItem2.setScale(0.2f);
+        gameItem.setPosition(0f, 0.5f, -1);
+        gameItem.setScale(0.05f);
         
         Track trackItem = new Track(trackMesh);
-        trackItem.setPosition(0, -1f, -2);
-        trackItem.setScale(0.2f);
+        trackItem.setPosition(0f, -0.3f, -1);
+        trackItem.setScale(0.1f);
         
-        gameItems = new GameItem[]{gameItem,gameItem2,trackItem};
+        gameItems = new GameItem[]{gameItem,trackItem};
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
@@ -144,24 +131,24 @@ public class DummyGame implements IGameLogic {
 
         
              Ball ball1 = (Ball)gameItems[0];
-             Ball ball2 = (Ball)gameItems[1];
-             Track track = (Track)gameItems[2];
+             Track track = (Track)gameItems[1];
              
-             Vector2f force = ball1.calculateGravityForce(track.getSlope()).mul(0.01f);
-             force = force.add(ball1.calculateTrackFrictionForce(track));
-             ball1.updateVelocity(force, interval);
+//             Vector2f force = ball1.calculateGravityForce(track.getSlope()).mul(0.01f);
+//             force = force.add(ball1.calculateTrackFrictionForce(track));
+//             ball1.updateVelocity(force, interval);
              
              //force = ball2.calculateGravityForce(track.getSlope());
              //force = force.add(ball2.calculateTrackFrictionForce(track));
              //ball2.updateVelocity(force, interval);
+           
+             ball1.updateGravity(interval*0.1f);
              
-             boolean result = ball1.isCollide(ball2);
-             System.out.println(result);
-        
-            //if(!(track.isCollide(ball1) || track.isCollide(ball2))){
-            	//gameItems[0].setPosition(0, gameItems[0].getPosition().y+0.005f, gameItems[0].getPosition().z);
-            	//gameItems[1].setPosition(0, gameItems[1].getPosition().y-0.005f, gameItems[1].getPosition().z);
-            //}
+             System.out.println("Ball: {"+ball1.getPosition().x+", "+ball1.getPosition().y+", "+ball1.getPosition().z);
+             System.out.println("Track: {"+track.getPosition().x+", "+track.getPosition().y+", "+track.getPosition().z);
+             
+            if(!(track.isCollide(ball1))){
+            	//gameItems[0].setPosition(0,0,-1);
+            }
     }
 
     @Override
