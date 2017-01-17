@@ -40,7 +40,7 @@ public class Mesh {
     private Box box;
     
     public Mesh(float[] positions, float[] textCoords, float[] normals, int[] indices, GameItemType gameItemType) {
-    	if(gameItemType == GameItemType.Ball){
+    	if(gameItemType == GameItemType.BALL){
     		positionOnObject = new Vector3f(positions[3],positions[4],positions[5]);
     	}
     	else{

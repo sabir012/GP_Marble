@@ -1,5 +1,16 @@
 package org.lwjglb.engine;
 
 public enum GameItemType {
-Ball,Track
+	BALL("marble1.obj"), TRACK("Track.obj");
+	
+	private final String filename;
+	private final String meshpath = "/models/";
+	
+	private GameItemType(String filename) {
+		this.filename = filename;
+	}
+	
+	public String getPath() {
+		return meshpath+filename;
+	}
 }

@@ -57,9 +57,9 @@ public class DummyGame implements IGameLogic {
         
         float reflectance = 1f;
         
-        Mesh mesh = OBJLoader.loadMesh("/models/marble1.obj",GameItemType.Ball);
-        Mesh trackMesh = OBJLoader.loadMesh("/models/Track.obj",GameItemType.Track);
-        Mesh mesh2 = OBJLoader.loadMesh("/models/marble1.obj",GameItemType.Ball);
+        Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
+        Mesh trackMesh = OBJLoader.loadMesh(GameItemType.TRACK);
+        Mesh mesh2 = OBJLoader.loadMesh(GameItemType.TRACK);
         
         Texture texture = new Texture("/textures/marbleRed.png");
         
@@ -73,7 +73,7 @@ public class DummyGame implements IGameLogic {
         gameItem.setPosition(0f, 1.5f, -1);
         gameItem.setScale(0.2f);
         
-        Track trackItem = new Track(trackMesh);
+        Track trackItem = new Track(trackMesh, 0,0,5,0, 0);
         trackItem.setPosition(0f, -0.3f, -1);
         trackItem.setScale(0.1f);
         
