@@ -17,9 +17,6 @@ public class Ball extends GameItem implements Gravitable{
 	
 	public Ball(Mesh mesh) {
 		super(mesh);
-		this.radius = (float)Math.sqrt(mesh.getPositionOnObject().x * mesh.getPositionOnObject().x 
-									+ mesh.getPositionOnObject().y * mesh.getPositionOnObject().y 
-									+ mesh.getPositionOnObject().z * mesh.getPositionOnObject().z);
 		material = PhysicalMaterial.PLASTIC;
 		calculateMass();
 		velocity = new Vector3f();
@@ -27,7 +24,6 @@ public class Ball extends GameItem implements Gravitable{
 	
 	public Ball(Mesh mesh, Vector3f velocity,PhysicalMaterial material) {
 		this(mesh);
-		
 		this.velocity = velocity;
 		this.material = material;
 		perimeter = (float) (2*Math.PI*this.radius);
@@ -49,11 +45,11 @@ public class Ball extends GameItem implements Gravitable{
 	@Override
     public void setScale(float scale) {
         super.setScale(scale);
-        this.setRadius(this.getRadius()*scale);
+        this.setRadius(scale);
     }
     
 	private void calculateMass() {
-		mass = 100f;//(float) (4.0/3.0*Math.PI*(radius*Math.pow(10, -6))*material.getMass());
+		mass = 1f;//(float) (4.0/3.0*Math.PI*(radius*Math.pow(10, -6))*material.getMass());
 	}
 	
     public void handleBallCollision(Ball ball){
@@ -79,38 +75,6 @@ public class Ball extends GameItem implements Gravitable{
       
       return distance < (this.radius + ball.radius); 
 	}
-
-//	@Override
-//	public Vector2f calculateGravityForce(float slope) {
-//		Vector2f gravityForce = new Vector2f((float) Math.sin(Math.toRadians(slope)),0);
-//        gravityForce.mul(5f/7f*mass*Physics.GRAVITY.getValue());
-//        return gravityForce;
-//	}
-	
-//	public Vector2f calculateTrackFrictionForce(Track track) {
-//		Vector2f force = new Vector2f();
-//		if (track != null) {
-//	        float slope = track.getSlope();
-//	        force.x *= (-1) * mass * Physics.GRAVITY.getValue() * Math.sin(Math.toRadians(slope)) * (track.getMaterial().getFrictionCoeff() + material.getFrictionCoeff());
-//	        force.y = 0;
-//		} else {
-//			force.x = 0;
-//			force.y = (-1) * mass * Physics.GRAVITY.getValue();
-//		}
-//        
-//        return force;
-//    }
-	
-//	public void updateVelocity(Vector2f force, float t) {
-//        velocity.x += force.x/mass*t;
-//        velocity.y += force.y/mass*t;
-//        Vector3f pos = this.getPosition();
-//        pos.y += velocity.x*t;
-//        pos.x += velocity.y*t;
-//        Vector3f rot = this.getRotation();
-//        System.out.println("Rot: "+getRotation());
-//        //this.setRotation(rot.x+(velocity.y*t*36000/this.perimeter), rot.y, rot.z+(velocity.x*t*36000/this.perimeter));
-//    }
 	
 	private Vector3f last_acceleration = new Vector3f();
 	private Vector3f acceleration= new Vector3f();
@@ -147,12 +111,17 @@ public class Ball extends GameItem implements Gravitable{
 		position.y = position.y + (-1)*(velocity.y*dt + last_acceleration.y*0.5f*dt*dt);
 		position.z = position.z + velocity.z*dt + last_acceleration.z*0.5f*dt*dt;
 		
-		//position =  position.add(this.velocity.mul(dt).add(last_acceleration.mul(0.5f * dt*dt)));
 		new_acceleration = force.div(mass);
 		avg_acceleration = last_acceleration.add(new_acceleration ).div(2);
 		velocity = velocity.add(avg_acceleration.mul(dt));
 		
 		this.setPosition(position.x, position.y, position.z);
+	}
+	
+	//TEST
+	public void collideWithWall(){
+		velocity = velocity.mul((-0.5f));
+		this.setPosition(this.getPosition().x, this.getPosition().y+radius, -1);
 	}
 
 	@Override

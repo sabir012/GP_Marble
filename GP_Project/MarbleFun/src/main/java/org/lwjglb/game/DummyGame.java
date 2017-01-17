@@ -70,8 +70,8 @@ public class DummyGame implements IGameLogic {
         trackMesh.setMaterial(material);
 
         Ball gameItem = new Ball(mesh);
-        gameItem.setPosition(0f, 0.5f, -1);
-        gameItem.setScale(0.05f);
+        gameItem.setPosition(0f, 1.5f, -1);
+        gameItem.setScale(0.2f);
         
         Track trackItem = new Track(trackMesh);
         trackItem.setPosition(0f, -0.3f, -1);
@@ -128,27 +128,16 @@ public class DummyGame implements IGameLogic {
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
-
         
-             Ball ball1 = (Ball)gameItems[0];
-             Track track = (Track)gameItems[1];
-             
-//             Vector2f force = ball1.calculateGravityForce(track.getSlope()).mul(0.01f);
-//             force = force.add(ball1.calculateTrackFrictionForce(track));
-//             ball1.updateVelocity(force, interval);
-             
-             //force = ball2.calculateGravityForce(track.getSlope());
-             //force = force.add(ball2.calculateTrackFrictionForce(track));
-             //ball2.updateVelocity(force, interval);
+          Ball ball1 = (Ball)gameItems[0];
+          Track track = (Track)gameItems[1];
            
-             ball1.updateGravity(interval*0.1f);
-             
-             System.out.println("Ball: {"+ball1.getPosition().x+", "+ball1.getPosition().y+", "+ball1.getPosition().z);
-             System.out.println("Track: {"+track.getPosition().x+", "+track.getPosition().y+", "+track.getPosition().z);
-             
-            if(!(track.isCollide(ball1))){
-            	//gameItems[0].setPosition(0,0,-1);
-            }
+          ball1.updateGravity(interval*0.01f);
+          
+          if(track.isCollide(ball1,interval*0.01f)){
+              System.out.println("YES");
+              ball1.collideWithWall();
+           }
     }
 
     @Override

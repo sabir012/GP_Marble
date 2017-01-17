@@ -33,20 +33,35 @@ public class Track extends GameItem {
     }
      
  
-	public boolean isCollide(Ball ball) {
+	public boolean isCollide(Ball ball, float dt) {
     	// get box closest point to sphere center by clamping
-    	Vector3f ballPosition = ball.getPosition();
-    	
-    	  float x = Math.max(box.getMinX(), Math.min(ballPosition.x, box.getMaxX()));
-    	  float y = Math.max(box.getMinY(), Math.min(ballPosition.y, box.getMaxY()));
-    	  float z = Math.max(box.getMinZ(), Math.min(ballPosition.z, box.getMaxY()));
-
-    	  // this is the same as isPointInsideSphere
-    	  double distance = Math.sqrt((x - ballPosition.x) * (x - ballPosition.x) +
-    	                           (y - ballPosition.y) * (y - ballPosition.y) +
-    	                           (z - ballPosition.z) * (z - ballPosition.z));
+//    	Vector3f ballPosition = ball.getPosition();
+//    	
+//    	  float x = Math.max(box.getMinX().x, Math.min(ballPosition.x, box.getMaxX().x));
+//    	  float y = Math.max(box.getMinX().y, Math.min(ballPosition.y, box.getMaxX().y));
+//    	  float z = Math.max(box.getMinX().z, Math.min(ballPosition.z, box.getMaxX().z));
+//
+//    	  // this is the same as isPointInsideSphere
+//    	  double distance = Math.sqrt((x - ballPosition.x) * (x - ballPosition.x) +
+//    	                           (y - ballPosition.y) * (y - ballPosition.y) +
+//    	                           (z - ballPosition.z) * (z - ballPosition.z));
+//    	  
+//    	  return distance < ball.getRadius();
     	  
-    	  return distance < ball.getRadius();
+    	  Vector3f C = getPosition();
+    	  Vector3f E = box.getMinX();
+    	  Vector3f L = box.getMaxX();
+    	  
+    	  Vector3f d = L.sub(E); // Direction vector of ray, from start to end )
+    	  Vector3f f= E.sub(C); //Vector from center sphere to ray start )
+    	  
+    	  Vector3f P = E.add(d.mul(dt));
+    	  
+    	  float distance = (float)Math.sqrt((P.x-C.x)*(P.x-C.x) + (P.y-C.y)*(P.y-C.y)+(P.z-C.z)*(P.z-C.z));
+    	  
+    	  System.out.println(distance+"---"+ball.getRadius());
+    	  
+    	  return distance<=ball.getRadius();
 	}
      
     public void setSlope(float slope) {
@@ -65,5 +80,11 @@ public class Track extends GameItem {
     public PhysicalMaterial getMaterial() {
         return this.material;
     }
+
+	@Override
+	public boolean isCollide(Ball ball) {
+		// TODO Auto-generated method stub
+		return false;
+	}
  
 }

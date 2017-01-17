@@ -182,31 +182,86 @@ public class Mesh {
         glDeleteVertexArrays(vaoId);
     }
     
-    public float GetMin(float[] positions,int mode){
+    public Vector3f GetMin(float[] positions,int mode){
     	float min = Integer.MAX_VALUE;
+    	float x = 0; 
+    	float y = 0; 
+    	float z = 0;
+    	
+    	Vector3f result = new Vector3f();
     	
     	for (int i=0;i<positions.length;i++){
     		if(i % 3 == mode){
     			if(min > positions[i]){
     				min = positions[i];
+    				if(mode == 1){
+    					x = positions[i-1];
+    					z = positions[i+1];
+    				}
+    				else if(mode == 0){
+    					y = positions[i+1];
+    					z = positions[i+2];
+    				}
+    				else if(mode == 2){
+    					y = positions[i-1];
+    					x = positions[i-2];
+    				}
     			}
     		}
     	}
     	
-    	return min;
+		if(mode == 0){
+    		result = new Vector3f(min,y,z);
+    	}
+		else if(mode == 1){
+			result = new Vector3f(x,min,z);
+		}
+		else if(mode == 2){
+			result = new Vector3f(x,y,min);
+		}
+    	
+    	return result;
     }
     
-    public float GetMax(float[] positions, int mode){
+    public Vector3f GetMax(float[] positions, int mode){
     	float max = Integer.MIN_VALUE;
+    	float x = 0; 
+    	float y = 0; 
+    	float z = 0;
+    	
+    	Vector3f result=new Vector3f();;
     	
     	for (int i=0;i<positions.length;i++){
     		if(i % 3 == mode){
     			if(max < positions[i]){
     				max = positions[i];
     			}
+    			
+    			if(mode == 1){
+					x = positions[i-1];
+					z = positions[i+1];
+				}
+				else if(mode == 0){
+					y = positions[i+1];
+					z = positions[i+2];
+				}
+				else if(mode == 2){
+					y = positions[i-1];
+					x = positions[i-2];
+				}
     		}
     	}
     	
-    	return max;
+		if(mode == 0){
+    		result = new Vector3f(max,y,z);
+    	}
+		else if(mode == 1){
+			result = new Vector3f(x,max,z);
+		}
+		else if(mode == 2){
+			result = new Vector3f(x,y,max);
+		}
+		
+    	return result;
     }
 }

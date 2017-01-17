@@ -1,17 +1,19 @@
 package org.lwjglb.engine.graph;
 
+import org.joml.Vector3f;
+
 public class Box {
 
-	private float minX;
-	private float minY;
-	private float minZ;
+	private Vector3f minX;
+	private Vector3f minY;
+	private Vector3f minZ;
 	
-	private float maxX;
-	private float maxY;
-	private float maxZ;
+	private Vector3f maxX;
+	private Vector3f maxY;
+	private Vector3f maxZ;
 	
 	
-	public Box(float minX, float minY, float minZ, float maxX, float maxY, float maxZ){
+	public Box(Vector3f minX, Vector3f minY, Vector3f minZ, Vector3f maxX, Vector3f maxY, Vector3f maxZ){
 		this.minX = minX;
 		this.minY = minY;
 		this.minZ = minZ;
@@ -22,38 +24,38 @@ public class Box {
 	}
 	
 	
-	public float getMinX(){
+	public Vector3f getMinX(){
 		return this.minX;
 	}
 	
-	public float getMinY(){
+	public Vector3f getMinY(){
 		return this.minY;
 	}
 	
-	public float getMinZ(){
+	public Vector3f getMinZ(){
 		return this.minZ;
 	}
 	
-	public float getMaxX(){
+	public Vector3f getMaxX(){
 		return this.maxX;
 	}
 	
-	public float getMaxY(){
+	public Vector3f getMaxY(){
 		return this.maxY;
 	}
 	
-	public float getMaxZ(){
+	public Vector3f getMaxZ(){
 		return this.maxZ;
 	}
 	
 	public void setScale(float scale) {
-		this.maxX*=scale;
-		this.maxY*=scale;
-		this.maxZ*=scale;
+		this.maxX = this.maxX.mul(scale);
+		this.maxY = this.maxY.mul(scale);
+		this.maxZ = this.maxZ.mul(scale);
 		
-		this.minX*=scale;
-		this.minY*=scale;
-		this.minZ*=scale;
+		this.minX = this.minX.mul(scale);
+		this.minY = this.minY.mul(scale);;
+		this.minZ = this.minZ.mul(scale);;
     }
 	  
 }
