@@ -133,7 +133,7 @@ public class DummyGame implements IGameLogic {
            
           ball1.updateGravity(interval*0.01f);
           
-          if(track.isCollide(ball1,interval*0.01f)){
+          if(track.isCollide(ball1)){
               System.out.println("YES");
               ball1.collideWithWall();
            }

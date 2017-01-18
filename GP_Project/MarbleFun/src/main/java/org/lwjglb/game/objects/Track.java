@@ -24,13 +24,16 @@ public class Track extends GameItem {
 		start = new Vector2f(xstart, ystart);
 		end = new Vector2f(xend, yend);
 		slope = (float) Math.toDegrees(Math.atan((end.y-start.y)/(end.x-start.x)));
+		
 		this.box = mesh.getBox();
+		
 		float meshLength = Math.abs(box.getMaxX().x - box.getMinX().x);
 		float trackLength = (float) Math.sqrt(Math.pow(xstart - xend, 2) + Math.pow(ystart - yend, 2));
 		setPosition((end.x + start.x)/2, (end.y + start.y) / 2, -1);
 		setRotation(0, 0, -slope);
 		setScale(trackLength / meshLength);
 		System.out.println(material.getTexturePath());
+		
 		Material mat = new Material();
 		mesh.setMaterial(mat);
 
@@ -44,48 +47,6 @@ public class Track extends GameItem {
 		this.material = material;
 
 		slope = 0;
-	}
-
-	public boolean isCollide(Ball ball, float dt) {
-		Vector2f ballPos = new Vector2f(ball.getPosition().x, ball.getPosition().y);
-		float normalLength = (float) Math.sqrt((end.x-start.x)*(end.x-start.x)+(end.y-start.y)*(end.y-start.y));
-	    float distance =  Math.abs((ballPos.x-start.x)*(end.y-start.y)-(ballPos.y-start.y)*(end.x-start.x))/normalLength;
-		return distance <= ball.getRadius();
-		// // get box closest point to sphere center by clamping
-		//// Vector3f ballPosition = ball.getPosition();
-		////
-		//// float x = Math.max(box.getMinX().x, Math.min(ballPosition.x,
-		// box.getMaxX().x));
-		//// float y = Math.max(box.getMinX().y, Math.min(ballPosition.y,
-		// box.getMaxX().y));
-		//// float z = Math.max(box.getMinX().z, Math.min(ballPosition.z,
-		// box.getMaxX().z));
-		////
-		//// // this is the same as isPointInsideSphere
-		//// double distance = Math.sqrt((x - ballPosition.x) * (x -
-		// ballPosition.x) +
-		//// (y - ballPosition.y) * (y - ballPosition.y) +
-		//// (z - ballPosition.z) * (z - ballPosition.z));
-		////
-		//// return distance < ball.getRadius();
-		//
-		// Vector3f C = getPosition();
-		// Vector3f E = box.getMinX();
-		// Vector3f L = box.getMaxX();
-		//
-		// Vector3f d = L.sub(E); // Direction vector of ray, from start to end
-		// )
-		// Vector3f f= E.sub(C); //Vector from center sphere to ray start )
-		//
-		// Vector3f P = E.add(d.mul(dt));
-		//
-		// float distance = (float)Math.sqrt((P.x-C.x)*(P.x-C.x) +
-		// (P.y-C.y)*(P.y-C.y)+(P.z-C.z)*(P.z-C.z));
-		//
-		// System.out.println(getPosition()+ " " + ball.getPosition());
-		// System.out.println(E + " " +L);
-		// System.out.println(distance+"---"+ball.getRadius());
-
 	}
 
 	public void setSlope(float slope) {
@@ -108,8 +69,10 @@ public class Track extends GameItem {
 
 	@Override
 	public boolean isCollide(Ball ball) {
-		// TODO Auto-generated method stub
-		return false;
+		Vector2f ballPos = new Vector2f(ball.getPosition().x, ball.getPosition().y);
+		float normalLength = (float) Math.sqrt((end.x-start.x)*(end.x-start.x)+(end.y-start.y)*(end.y-start.y));
+	    float distance =  Math.abs((ballPos.x-start.x)*(end.y-start.y)-(ballPos.y-start.y)*(end.x-start.x))/normalLength;
+		return distance <= ball.getRadius();
 	}
 
 }
