@@ -31,7 +31,6 @@ public class Track extends GameItem {
 		setRotation(0, 0, -slope);
 		setScale(trackLength / meshLength);
 		System.out.println(material.getTexturePath());
-		Texture tex = new Texture(material.getTexturePath());
 		Material mat = new Material();
 		mesh.setMaterial(mat);
 

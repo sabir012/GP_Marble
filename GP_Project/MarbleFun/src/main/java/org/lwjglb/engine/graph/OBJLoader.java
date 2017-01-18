@@ -9,7 +9,7 @@ import org.lwjglb.engine.Utils;
 
 public class OBJLoader {
 
-    public static Mesh loadMesh(GameItemType gameItemType) throws Exception {
+    public static Mesh loadMesh(GameItemType gameItemType) throws Exception { 
         List<String> lines = Utils.readAllLines(gameItemType.getPath());
         
         List<Vector3f> vertices = new ArrayList<>();

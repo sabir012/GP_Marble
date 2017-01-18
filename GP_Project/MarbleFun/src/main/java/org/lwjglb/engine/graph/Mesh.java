@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-public class Mesh {
+public class Mesh { 
 	private static final int X_MODE = 0;
 	private static final int Y_MODE = 1;
 	private static final int Z_MODE = 2;

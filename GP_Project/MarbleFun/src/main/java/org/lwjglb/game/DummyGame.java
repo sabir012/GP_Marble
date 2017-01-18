@@ -74,7 +74,7 @@ public class DummyGame implements IGameLogic {
         gameItem.setPosition(-3f, 4f, -1);
         gameItem.setScale(0.6f);
         
-        Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);
+        Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);  
         
         gameItems = new GameItem[]{gameItem,trackItem};
          
