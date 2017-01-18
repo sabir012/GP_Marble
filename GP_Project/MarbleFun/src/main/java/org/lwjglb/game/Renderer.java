@@ -124,12 +124,15 @@ public class Renderer {
     private void renderHud(Window window, IHud hud) {
     	hudShaderProgram.bind();
     	Matrix4f ortho = transformation.getOrthoProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
+    	
     	for (GameItem gameItem : hud.getGameItems()) {
     		Mesh mesh = gameItem.getMesh();
+    		
     		// Set ortohtaphic and model matrix for this HUD item
     		Matrix4f projModelMatrix = transformation.getOrtoProjModelMatrix(gameItem, ortho);
 	    	hudShaderProgram.setUniform("projModelMatrix", projModelMatrix);
-	    	hudShaderProgram.setUniform("colour", gameItem.getMesh().getMaterial().getColour());
+	    	hudShaderProgram.setUniform("texture_sampler", 0);
+	    	
 	    	// Render the mesh for this HUD item
 	    	mesh.render();
     	}
@@ -143,7 +146,9 @@ public class Renderer {
     	hudShaderProgram.link();
     	// Create uniforms for Ortographic-model projection matrix and base colour
     	hudShaderProgram.createUniform("projModelMatrix");
-    	hudShaderProgram.createUniform("colour");
+    	hudShaderProgram.createUniform("texture_sampler");
+    //	hudShaderProgram.createMaterialUniform("material");
+    //	hudShaderProgram.createUniform("colour");
     }
 
     public void cleanup() {

@@ -33,11 +33,14 @@ public class Hud implements IHud {
 
         // Create compass
         Mesh mesh = OBJLoader.loadMesh(GameItemType.HUD1);
-        Texture texture = new Texture("/textures/marbleRed.png");
-        Material material = new Material(texture, 1f);
+        Texture texture = new Texture("/textures/wood2.png");
+        Material material = new Material(texture);
+      //  material.setColour(new Vector3f(1, 0, 0));
         mesh.setMaterial(material);
         this.gameItem = new GUIobject(mesh);
-        gameItem.setScale(40.0f);
+        gameItem.setScale(30.0f);
+        
+      
         // Rotate to transform it to screen coordinates
         gameItem.setRotation(0f, 0f, 180f);
 
@@ -59,6 +62,8 @@ public class Hud implements IHud {
     }
    
     public void updateSize(Window window) {
-        this.gameItem.setPosition(window.getWidth() - 40f, 50f, 0);
+        this.gameItem.setPosition(window.getWidth() - 70f, 50f, 0);
+        System.out.println(this.gameItem.getPosition());
+        System.out.println(this.gameItem.getScale());
     }
 }
