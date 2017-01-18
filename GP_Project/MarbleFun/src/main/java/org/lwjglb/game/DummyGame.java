@@ -42,6 +42,8 @@ public class DummyGame implements IGameLogic {
     private DirectionalLight directionalLight;
 
     private float lightAngle;
+    
+    private Hud hud;
 
     private static final float CAMERA_POS_STEP = 0.05f;
 
@@ -89,6 +91,9 @@ public class DummyGame implements IGameLogic {
         lightPosition = new Vector3f(0, 1, 1);
         lightColour = new Vector3f(1, 1, 1);
         directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
+        
+     // Create HUD
+        hud = new Hud();
     }
 
     @Override
@@ -141,7 +146,8 @@ public class DummyGame implements IGameLogic {
 
     @Override
     public void render(Window window) {
-    	renderer.render(window, camera, gameItems, ambientLight, pointLight, directionalLight);
+    	hud.updateSize(window);
+    	renderer.render(window, camera, gameItems, ambientLight, pointLight, directionalLight, hud);
     }
 
     @Override
