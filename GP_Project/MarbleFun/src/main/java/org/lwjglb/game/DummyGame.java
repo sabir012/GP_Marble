@@ -76,8 +76,9 @@ public class DummyGame implements IGameLogic {
         gameItem.setPosition(-2.2f, 4f, -10);
         
         Track trackItem = new Track(trackMesh, -2.5f,1,5,-1, PhysicalMaterial.GRAS);  
+        Track trackItem2 = new Track(trackMesh, 0f,-12,8,-3, PhysicalMaterial.GRAS);
         
-        gameItems = new GameItem[]{gameItem,trackItem};
+        gameItems = new GameItem[]{gameItem,trackItem,trackItem2};
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
@@ -134,13 +135,16 @@ public class DummyGame implements IGameLogic {
         
           Ball ball1 = (Ball)gameItems[0];
           Track track = (Track)gameItems[1];
-           
+          Track track2 = (Track)gameItems[2];
+          
           ball1.updateGravity(interval*0.1f);
           
           if(track.isCollide(ball1)){
-              System.out.println("YES");
-              //ball1.collideWithWall();
+        	  System.out.println("Upper track");
            }
+          else if(track2.isCollide(ball1)){
+        	  System.out.println("Below track");
+          }
     }
 
     @Override
