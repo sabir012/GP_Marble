@@ -72,11 +72,10 @@ public class DummyGame implements IGameLogic {
         mesh2.setMaterial(material);
         trackMesh.setMaterial(material);
 
-        Ball gameItem = new Ball(mesh);
-        gameItem.setPosition(-3f, 4f, -1);
-        gameItem.setScale(0.6f);
+        Ball gameItem = new Ball(mesh,0.6f, new Vector3f(), PhysicalMaterial.STEEL);
+        gameItem.setPosition(-2.2f, 4f, -6);
         
-        Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);  
+        Track trackItem = new Track(trackMesh, -2.5f,1,5,-1, PhysicalMaterial.GRAS);  
         
         gameItems = new GameItem[]{gameItem,trackItem};
          
@@ -136,11 +135,11 @@ public class DummyGame implements IGameLogic {
           Ball ball1 = (Ball)gameItems[0];
           Track track = (Track)gameItems[1];
            
-          ball1.updateGravity(interval*0.01f);
+          ball1.updateGravity(interval*0.1f);
           
           if(track.isCollide(ball1)){
               System.out.println("YES");
-              ball1.collideWithWall();
+              //ball1.collideWithWall();
            }
     }
 

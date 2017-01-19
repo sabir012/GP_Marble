@@ -16,17 +16,16 @@ public class Ball extends GameItem implements Gravitable{
 	private PhysicalMaterial material;
 	
 	public Ball(Mesh mesh) {
-		super(mesh);
-		material = PhysicalMaterial.PLASTIC;
-		calculateMass();
-		velocity = new Vector3f();
+		this(mesh,1,new Vector3f(),PhysicalMaterial.PLASTIC);
 	}
 	
-	public Ball(Mesh mesh, Vector3f velocity,PhysicalMaterial material) {
-		this(mesh);
+	public Ball(Mesh mesh,float radius, Vector3f velocity,PhysicalMaterial material) {
+		super(mesh);
 		this.velocity = velocity;
 		this.material = material;
-		perimeter = (float) (2*Math.PI*this.radius);
+		this.radius = radius;
+		this.setScale(radius);
+		calculateMass();
 	}
 	
 	
@@ -128,5 +127,13 @@ public class Ball extends GameItem implements Gravitable{
 	public Vector2f calculateGravityForce(float slope) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setVelocity(Vector3f velocity){
+		this.velocity = velocity;
+	}
+	
+	public Vector3f getVelocity(){
+		return velocity;
 	}
 }
