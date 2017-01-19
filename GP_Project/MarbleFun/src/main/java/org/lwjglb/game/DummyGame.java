@@ -65,7 +65,7 @@ public class DummyGame implements IGameLogic {
         Mesh mesh2 = OBJLoader.loadMesh(GameItemType.BOWL);
         
         Texture texture = new Texture("/textures/marbleRed.png");
-        Texture tex = new Texture("/textures/gold.png");
+        Texture tex = new Texture("/textures/grass.png");
         
         Material material = new Material(texture, reflectance);
         Material matBowl = new Material(tex, reflectance);
