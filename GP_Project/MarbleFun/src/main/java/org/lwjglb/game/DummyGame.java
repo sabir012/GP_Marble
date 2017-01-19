@@ -73,7 +73,7 @@ public class DummyGame implements IGameLogic {
         trackMesh.setMaterial(material);
 
         Ball gameItem = new Ball(mesh,0.6f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem.setPosition(-2.2f, 4f, -6);
+        gameItem.setPosition(-2.2f, 4f, -10);
         
         Track trackItem = new Track(trackMesh, -2.5f,1,5,-1, PhysicalMaterial.GRAS);  
         
