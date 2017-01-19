@@ -34,6 +34,7 @@ public class DummyGame implements IGameLogic {
     private final Camera camera;
 
     private GameItem[] gameItems;
+    private Track[] tracks;
     
     private Vector3f ambientLight;
 
@@ -67,18 +68,28 @@ public class DummyGame implements IGameLogic {
         Texture texture = new Texture("/textures/marbleRed.png");
         
         Material material = new Material(texture, reflectance);
-
+        
         mesh.setMaterial(material);
         mesh2.setMaterial(material);
         trackMesh.setMaterial(material);
 
-        Ball gameItem = new Ball(mesh,0.6f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem.setPosition(-2.2f, 4f, -10);
+        Ball gameItem = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
+        gameItem.setPosition(-7f, 5f, -10);
         
-        Track trackItem = new Track(trackMesh, -2.5f,1,5,-1, PhysicalMaterial.GRAS);  
-        Track trackItem2 = new Track(trackMesh, 0f,-12,8,-3, PhysicalMaterial.GRAS);
+        tracks = new Track[] {
+        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -8, 4, 0, 2, PhysicalMaterial.GRAS),
+        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f,2,5f,1.5f, PhysicalMaterial.WOOD),
+        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6,-3,6.5f,3, PhysicalMaterial.GOLD),
+        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -4f,-1.5f,7,-1.5f, PhysicalMaterial.STEEL),
+        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f,2f,-7f,-5f, PhysicalMaterial.PLASTIC),
+        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f,-3f,5f,-7f, PhysicalMaterial.PLASTIC),
+        };
         
-        gameItems = new GameItem[]{gameItem,trackItem,trackItem2};
+        gameItems = new GameItem[tracks.length+1];
+        gameItems[0] = gameItem;
+        for (int i = 1; i < gameItems.length; i++) {
+			gameItems[i] = tracks[i-1];
+		}
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
@@ -134,16 +145,13 @@ public class DummyGame implements IGameLogic {
         }
         
           Ball ball1 = (Ball)gameItems[0];
-          Track track = (Track)gameItems[1];
-          Track track2 = (Track)gameItems[2];
           
-          ball1.updateGravity(interval*0.1f);
+          ball1.updateGravity(interval*0.05f);
           
-          if(track.isCollide(ball1)){
-        	  System.out.println("Upper track");
-           }
-          else if(track2.isCollide(ball1)){
-        	  System.out.println("Below track");
+          for (Track track : tracks) {
+        	  if (track.isCollide(ball1)) {
+        		  break;
+        	  }
           }
     }
 
