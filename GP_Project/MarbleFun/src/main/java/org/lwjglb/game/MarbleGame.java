@@ -22,7 +22,7 @@ import org.lwjglb.game.objects.Track;
 import org.lwjglb.engine.graph.PointLight;
 import org.lwjglb.engine.graph.DirectionalLight;
 
-public class DummyGame implements IGameLogic {
+public class MarbleGame implements IGameLogic {
 
 
     private static final float MOUSE_SENSITIVITY = 0.2f;
@@ -48,7 +48,7 @@ public class DummyGame implements IGameLogic {
 
     private static final float CAMERA_POS_STEP = 0.05f;
 
-    public DummyGame() {
+    public MarbleGame() {
         renderer = new Renderer();
         camera = new Camera();
         cameraInc = new Vector3f(0, 0, 0);

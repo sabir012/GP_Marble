@@ -9,7 +9,7 @@ public class Main {
     	System.setProperty("java.awt.headless", "true");
         try {
             boolean vSync = true;
-            IGameLogic gameLogic = new DummyGame();
+            IGameLogic gameLogic = new MarbleGame();
             GameEngine gameEng = new GameEngine("GAME", 800, 600, vSync, gameLogic);
             gameEng.start();
         } catch (Exception excp) {
