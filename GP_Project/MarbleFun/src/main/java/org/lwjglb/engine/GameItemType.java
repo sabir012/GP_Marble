@@ -1,7 +1,7 @@
 package org.lwjglb.engine;
 
 public enum GameItemType {
-	BALL("marble1.obj"), TRACK("track.obj"), HUD1("trackHUD.obj");
+	BALL("marble1.obj"), TRACK("track.obj"), trackHUD("trackHUD.obj"), panelHUD("panel3.obj");
 	
 	private final String filename;
 	private final String meshpath = "/models/";
