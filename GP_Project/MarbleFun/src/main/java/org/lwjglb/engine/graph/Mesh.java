@@ -146,8 +146,7 @@ public class Mesh {
             glBindTexture(GL_TEXTURE_2D, texture.getId());
         }
         
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   
         
         // Draw the mesh
         glBindVertexArray(getVaoId());

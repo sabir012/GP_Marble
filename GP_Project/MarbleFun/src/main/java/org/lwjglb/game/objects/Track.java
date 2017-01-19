@@ -32,10 +32,11 @@ public class Track extends GameItem {
 		setPosition((end.x + start.x)/2, (end.y + start.y) / 2, -1);
 		setRotation(0, 0, -slope);
 		setScale(trackLength / meshLength);
-		System.out.println(material.getTexturePath());
+		Texture tex = new Texture(material.getTexturePath());
 		
-		Material mat = new Material();
+		Material mat = new Material(tex,0f);
 		mesh.setMaterial(mat);
+		
 
         
 		this.material = PhysicalMaterial.GRAS;
