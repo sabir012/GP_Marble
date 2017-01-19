@@ -19,6 +19,7 @@ import org.lwjglb.engine.graph.Texture;
 import org.lwjglb.game.objects.Ball;
 import org.lwjglb.game.objects.PhysicalMaterial;
 import org.lwjglb.game.objects.Track;
+import org.lwjglb.game.objects.Bowl;
 import org.lwjglb.engine.graph.PointLight;
 import org.lwjglb.engine.graph.DirectionalLight;
 
@@ -59,24 +60,37 @@ public class DummyGame implements IGameLogic {
         float reflectance = 1f;
         
         Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
+        Mesh mesh3 = OBJLoader.loadMesh(GameItemType.BALL);
         Mesh trackMesh = OBJLoader.loadMesh(GameItemType.TRACK);
-        Mesh mesh2 = OBJLoader.loadMesh(GameItemType.TRACK);
+        Mesh mesh2 = OBJLoader.loadMesh(GameItemType.BOWL);
         
         Texture texture = new Texture("/textures/marbleRed.png");
+        Texture tex = new Texture("/textures/gold.png");
         
         Material material = new Material(texture, reflectance);
+        Material matBowl = new Material(tex, reflectance);
 
         mesh.setMaterial(material);
-        mesh2.setMaterial(material);
+        mesh2.setMaterial(matBowl);
         trackMesh.setMaterial(material);
-
+        mesh3.setMaterial(material);
+        
         Ball gameItem = new Ball(mesh);
         gameItem.setPosition(-3f, 4f, -1);
         gameItem.setScale(0.6f);
         
-        Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);  
+        Ball gameItem1 = new Ball(mesh3);
+        gameItem1.setPosition(5f, 0f, -1);
+        gameItem1.setScale(0.2f);
         
-        gameItems = new GameItem[]{gameItem,trackItem};
+        Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);
+        
+        Bowl bowlItem = new Bowl(mesh2,PhysicalMaterial.GOLD);
+        bowlItem.setPosition(5f, -3f, -1);
+        bowlItem.setScale(1f);
+       
+        
+        gameItems = new GameItem[]{bowlItem, gameItem,gameItem1,trackItem};
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
@@ -128,13 +142,14 @@ public class DummyGame implements IGameLogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
         
-          Ball ball1 = (Ball)gameItems[0];
-          Track track = (Track)gameItems[1];
+          Ball ball1 = (Ball)gameItems[1];
+          Track track = (Track)gameItems[3];
+          Ball ball2 = (Ball)gameItems[2];
            
           ball1.updateGravity(interval*0.01f);
+          ball2.updateGravity(interval*0.02f);
           
           if(track.isCollide(ball1)){
-              System.out.println("YES");
               ball1.collideWithWall();
            }
     }

@@ -13,8 +13,18 @@ public abstract class GameItem {
     private float scale;
 
     private final Vector3f rotation;
+    
+    private boolean trans = false;
 
-    public GameItem(Mesh mesh) {
+    public boolean isTrans() {
+		return trans;
+	}
+
+	public void setTrans(boolean trans) {
+		this.trans = trans;
+	}
+
+	public GameItem(Mesh mesh) {
         this.mesh = mesh;
         position = new Vector3f(0, 0, 0);
         scale = 1;

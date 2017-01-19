@@ -145,7 +145,10 @@ public class Mesh {
             // Bind the texture
             glBindTexture(GL_TEXTURE_2D, texture.getId());
         }
-
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        
         // Draw the mesh
         glBindVertexArray(getVaoId());
         glEnableVertexAttribArray(0);
@@ -160,6 +163,39 @@ public class Mesh {
         glDisableVertexAttribArray(2);
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    public void renderTrans() {
+    	Texture texture = material.getTexture();
+        if (texture != null) {
+            // Activate firs texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
+        
+        //glDepthFunc(GL_EQUAL);
+        
+       
+        // Draw the mesh
+        glBindVertexArray(getVaoId());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        
+        //Draw Transparent
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        // Restore state
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
     }
 
     public void cleanUp() {

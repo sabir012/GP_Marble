@@ -17,7 +17,7 @@ public class Ball extends GameItem implements Gravitable{
 	
 	public Ball(Mesh mesh) {
 		super(mesh);
-		material = PhysicalMaterial.PLASTIC;
+		material = PhysicalMaterial.WOOD;
 		calculateMass();
 		velocity = new Vector3f();
 	}

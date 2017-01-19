@@ -108,7 +108,13 @@ public class Renderer {
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);            
             // Render the mesh for this game item
             shaderProgram.setUniform("material", mesh.getMaterial());
-            mesh.render();
+            if(!gameItem.isTrans())
+            {
+            	mesh.render();
+            	
+            }
+            else
+            	mesh.renderTrans();
         }
 
         shaderProgram.unbind();
