@@ -73,11 +73,13 @@ public class MarbleGame implements IGameLogic {
         mesh2.setMaterial(material);
         trackMesh.setMaterial(material);
 
-        Ball gameItem = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem.setPosition(-7f, 5.4f, -10);
-        
-        Ball gameItem2 = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.GOLD);
-        gameItem2.setPosition(-3f, 4.5f, -10);
+
+        Ball gameItem2 = new Ball(mesh2,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
+        gameItem2.setPosition(-5f, 4.5f, -10);
+
+        Ball gameItem = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.GOLD);
+        gameItem.setPosition(-7f, 5f, -10);
+
         
         tracks = new Track[] {
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -8, 4, 0, 2, PhysicalMaterial.GRAS),

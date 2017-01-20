@@ -3,10 +3,10 @@ package org.lwjglb.game.objects;
 import org.lwjglb.engine.GameItem;
 import org.lwjglb.engine.Gravitable;
 import org.lwjglb.engine.Physics;
+import org.lwjglb.engine.graph.Material;
 import org.lwjglb.engine.graph.Mesh;
 
-import java.util.concurrent.locks.ReentrantLock;
-
+import org.lwjglb.engine.graph.Texture;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -18,17 +18,24 @@ public class Ball extends GameItem implements Gravitable{
 	private float perimeter;
 	private PhysicalMaterial material;
 	
-	public Ball(Mesh mesh) {
+	public Ball(Mesh mesh) throws Exception {
 		this(mesh,1,new Vector3f(),PhysicalMaterial.PLASTIC);
 	}
 	
-	public Ball(Mesh mesh,float radius, Vector3f velocity,PhysicalMaterial material) {
+	public Ball(Mesh mesh,float radius, Vector3f velocity,PhysicalMaterial material) throws Exception {
 		super(mesh);
 		this.velocity = velocity;
 		this.material = material;
 		this.radius = radius;
 		this.setScale(radius);
 		calculateMass();
+		
+		Texture tex = new Texture(material.getTexturePath());
+		
+		Material mat = new Material(tex,0f);
+		
+		
+		mesh.setMaterial(mat);
 	}
 	
 	
@@ -55,7 +62,8 @@ public class Ball extends GameItem implements Gravitable{
 	}
     
 	private void calculateMass() {
-		mass = 1f;//(float) (4.0/3.0*Math.PI*(radius*Math.pow(10, -6))*material.getMass());
+		mass = 1;//(float) (4.0/3.0*Math.PI*(radius*Math.pow(10, -4))*material.getMass());
+		System.out.println(mass);
 	}
     
     public void handleBallCollision(Ball ball){
