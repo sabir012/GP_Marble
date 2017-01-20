@@ -4,6 +4,9 @@ import org.lwjglb.engine.GameItem;
 import org.lwjglb.engine.Gravitable;
 import org.lwjglb.engine.Physics;
 import org.lwjglb.engine.graph.Mesh;
+
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -46,21 +49,76 @@ public class Ball extends GameItem implements Gravitable{
         super.setScale(scale);
         this.setRadius(scale);
     }
+	
+	public float getMass(){
+		return this.mass;
+	}
     
 	private void calculateMass() {
 		mass = 1f;//(float) (4.0/3.0*Math.PI*(radius*Math.pow(10, -6))*material.getMass());
 	}
-	
+    
     public void handleBallCollision(Ball ball){
     	if(this.isCollide(ball)){
-    		Vector3f displacement = this.getPosition().sub(ball.getPosition()).normalize();
-       		
-    		this.velocity = this.velocity.sub(displacement.mul(2).mul(this.velocity.dot(displacement)));
-    		ball.velocity = ball.velocity.sub(displacement.mul(2).mul(ball.velocity.dot(displacement)));
-    	} 
+    		Vector3f currentPosition = new Vector3f(this.getPosition().x,this.getPosition().y,this.getPosition().z);
+    		Vector3f ballPosition = new Vector3f(ball.getPosition().x,ball.getPosition().y,ball.getPosition().z);
+    		
+    		Vector3f currentVelocity = this.getVelocity();
+    		Vector3f ballVelocity = ball.getVelocity();
+    		
+    	    Vector3f x = ballPosition.sub(currentPosition);
+    	    ballPosition = ball.getPosition();
+    	    x = x.normalize();
+    	     
+    	    Vector3f v1 = currentVelocity;
+    	    Vector3f v1Temp = new Vector3f(v1.x,v1.y,v1.z);
+    	    float x1 = v1Temp.dot(x);
+    	    v1Temp = new Vector3f(v1.x,v1.y,v1.z);
+    	    
+    	    Vector3f xTemp = new Vector3f(x.x,x.y,x.z);
+    	    Vector3f v1x = xTemp.mul(x1);
+    	    xTemp = new Vector3f(x.x,x.y,x.z);
+    	    Vector3f v1y = v1Temp.sub(v1x);
+    	    v1Temp = new Vector3f(v1.x,v1.y,v1.z);
+    	    
+            float m1 = this.getMass();
+    	    
+    	    x = x.mul(-1);
+    	    xTemp = new Vector3f(x.x,x.y,x.z);
+    	    Vector3f v2 = ballVelocity;
+    	    Vector3f v2Temp = new Vector3f(v2.x,v2.y,v2.z);
+    	    
+    	    float x2 =v2Temp.dot(xTemp);
+    	    xTemp = new Vector3f(x.x,x.y,x.z);
+    	    v2Temp = new Vector3f(v2.x,v2.y,v2.z);
+    	    
+    	    Vector3f v2x = xTemp.mul(x2);
+    	    xTemp = new Vector3f(x.x,x.y,x.z);
+            Vector3f v2y = v2Temp.sub(v2x);
+    	    v2Temp = new Vector3f(v2.x,v2.y,v2.z);
+
+    	    float m2 = ball.getMass();
+    	    
+    	    float combinedMass = m1 + m2;
+    	    
+    	    
+    	    Vector3f v1xTemp = new Vector3f(v1x.x,v1x.y,v1x.z);
+    	    Vector3f v1yTemp = new Vector3f(v1y.x,v1y.y,v1y.z);
+    	    Vector3f v2xTemp = new Vector3f(v2x.x,v2x.y,v2x.z);
+    	    
+    	    Vector3f newVelA = v1xTemp.mul((m1 - m2)/combinedMass).add(v2xTemp.mul((2f * m2) / combinedMass)).add(v1yTemp);
+    	    
+    	    v1xTemp = new Vector3f(v1x.x,v1x.y,v1x.z);
+    	    Vector3f v2yTemp = new Vector3f(v2y.x,v2y.y,v2y.z);
+    	    v2xTemp = new Vector3f(v2x.x,v2x.y,v2x.z);
+    	    Vector3f newVelB = v1xTemp.mul((2f * m1) / combinedMass).add(v2xTemp.mul((m2 - m1) / combinedMass)).add(v2yTemp);
+    	    
+            this.setVelocity(new Vector3f(newVelA.x,newVelA.y,this.velocity.z));
+            ball.setVelocity(new Vector3f(newVelB.x, newVelB.y, ballVelocity.z));
+    	}
     }
 
-	@Override
+    @Override
 	public boolean isCollide(Ball ball) {
   	  // we are using multiplications because it's faster than calling Math.pow
 	  Vector3f ballPosition = ball.getPosition();
@@ -117,11 +175,6 @@ public class Ball extends GameItem implements Gravitable{
 		this.setPosition(position.x, position.y, position.z);
 	}
 	
-	//TEST
-	public void collideWithWall(){
-		velocity = velocity.mul((-0.5f));
-		this.setPosition(this.getPosition().x, this.getPosition().y+radius, -1);
-	}
 
 	@Override
 	public Vector2f calculateGravityForce(float slope) {

@@ -63,7 +63,7 @@ public class MarbleGame implements IGameLogic {
         
         Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
         Mesh trackMesh = OBJLoader.loadMesh(GameItemType.TRACK);
-        Mesh mesh2 = OBJLoader.loadMesh(GameItemType.TRACK);
+        Mesh mesh2 = OBJLoader.loadMesh(GameItemType.BALL);
         
         Texture texture = new Texture("/textures/marbleRed.png");
         
@@ -74,7 +74,10 @@ public class MarbleGame implements IGameLogic {
         trackMesh.setMaterial(material);
 
         Ball gameItem = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem.setPosition(-7f, 5f, -10);
+        gameItem.setPosition(-7f, 5.4f, -10);
+        
+        Ball gameItem2 = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.GOLD);
+        gameItem2.setPosition(-3f, 4.5f, -10);
         
         tracks = new Track[] {
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -8, 4, 0, 2, PhysicalMaterial.GRAS),
@@ -87,7 +90,8 @@ public class MarbleGame implements IGameLogic {
         
         gameItems = new GameItem[tracks.length+1];
         gameItems[0] = gameItem;
-        for (int i = 1; i < gameItems.length; i++) {
+        gameItems[1] = gameItem2;
+        for (int i = 2; i < gameItems.length; i++) {
 			gameItems[i] = tracks[i-1];
 		}
          
@@ -145,13 +149,22 @@ public class MarbleGame implements IGameLogic {
         }
         
           Ball ball1 = (Ball)gameItems[0];
+          Ball ball2 = (Ball)gameItems[1];
           
-          ball1.updateGravity(interval*0.05f);
+          ball1.updateGravity(interval*0.03f);
+          ball2.updateGravity(interval*0.03f);
+          
+          if(ball1.isCollide(ball2)){
+        	  ball1.handleBallCollision(ball2);
+          }
           
           for (Track track : tracks) {
         	  if (track.isCollide(ball1)) {
-        		  break;
+        		 System.out.println("Collided Ball1");
         	  }
+        	  if (track.isCollide(ball2)) {
+         		 System.out.println("Collided Ball2");
+         	  }
           }
     }
 
