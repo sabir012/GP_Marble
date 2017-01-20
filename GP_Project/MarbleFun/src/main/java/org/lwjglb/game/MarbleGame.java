@@ -84,7 +84,7 @@ public class MarbleGame implements IGameLogic {
         tracks = new Track[] {
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -8, 4, 0, 2, PhysicalMaterial.GRAS),
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f,2,5f,1.5f, PhysicalMaterial.WOOD),
-        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6,-3,6.5f,3, PhysicalMaterial.GOLD),
+        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6.5f,-3,6.5f,3, PhysicalMaterial.GOLD),
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -4f,-1.5f,7,-1.5f, PhysicalMaterial.STEEL),
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f,2f,-7f,-5f, PhysicalMaterial.PLASTIC),
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f,-3f,5f,-7f, PhysicalMaterial.PLASTIC),

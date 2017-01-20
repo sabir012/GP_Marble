@@ -176,9 +176,14 @@ public class Ball extends GameItem implements Gravitable{
 		position.y = position.y + (-1)*(velocity.y*dt + last_acceleration.y*0.5f*dt*dt);
 		position.z = position.z + velocity.z*dt + last_acceleration.z*0.5f*dt*dt;
 		
-		new_acceleration = force.div(mass);
-		avg_acceleration = last_acceleration.add(new_acceleration ).div(2);
-		velocity = velocity.add(avg_acceleration.mul(dt));
+		Vector3f forceTemp = new Vector3f(force.x,force.y,force.z);
+		
+		new_acceleration = forceTemp.div(mass);
+		Vector3f lastTempAcc = new Vector3f(last_acceleration.x,last_acceleration.y,last_acceleration.z);
+		avg_acceleration = lastTempAcc.add(new_acceleration ).div(2);
+		Vector3f avgTempAcc = new Vector3f(avg_acceleration.x,avg_acceleration.y,avg_acceleration.z);
+		
+		velocity = velocity.add(avgTempAcc.mul(dt));
 		
 		this.setPosition(position.x, position.y, position.z);
 	}
