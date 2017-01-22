@@ -9,8 +9,6 @@
     </parent>
 	
     <artifactId>GP_MarbleFun</artifactId>
-    <version>1.0</version>
-
     <dependencies>
         <dependency>
             <groupId>org.lwjgl</groupId>
@@ -51,6 +49,11 @@
             <version>${lwjgl.version}</version>
             <classifier>${native.target}</classifier>
 			<scope>runtime</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.jdom</groupId>
+        	<artifactId>jdom</artifactId>
+        	<version>2.0.2</version>
         </dependency>
     </dependencies>	
 </project>

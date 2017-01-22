@@ -91,6 +91,14 @@ public class Texture {
         glGenerateMipmap(GL_TEXTURE_2D);
         return textureId;
     }
+    
+    public int getWidth(){
+    	return this.width;
+    }
+    
+    public int getHeight(){
+    	return this.height;
+    }
 
     public void cleanup() {
         glDeleteTextures(id);

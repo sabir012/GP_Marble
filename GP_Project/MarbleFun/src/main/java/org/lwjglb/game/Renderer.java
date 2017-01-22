@@ -5,7 +5,6 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjglb.engine.GameItem;
-import org.lwjglb.engine.IHud;
 import org.lwjglb.engine.Utils;
 import org.lwjglb.engine.Window;
 import org.lwjglb.engine.graph.Camera;
@@ -29,8 +28,6 @@ public class Renderer {
     private final Transformation transformation;
 
     private ShaderProgram shaderProgram;
-    
-    private ShaderProgram hudShaderProgram;
 
     private final float specularPower;
 
@@ -57,8 +54,6 @@ public class Renderer {
         shaderProgram.createUniform("ambientLight");
         shaderProgram.createPointLightUniform("pointLight");
         shaderProgram.createDirectionalLightUniform("directionalLight");
-        
-        setupHudShader();
     }
 
     public void clear() {
@@ -66,7 +61,7 @@ public class Renderer {
     }
 
     public void render(Window window, Camera camera, GameItem[] gameItems, Vector3f ambientLight,
-        PointLight pointLight, DirectionalLight directionalLight, IHud hud) {
+        PointLight pointLight, DirectionalLight directionalLight) {
         
         clear();
 
@@ -117,46 +112,11 @@ public class Renderer {
         }
 
         shaderProgram.unbind();
-        
-        renderHud(window, hud);
-    }
-    
-    private void renderHud(Window window, IHud hud) {
-    	hudShaderProgram.bind();
-    	Matrix4f ortho = transformation.getOrthoProjectionMatrix(0, window.getWidth(), window.getHeight(), 0);
-    	
-    	for (GameItem gameItem : hud.getGameItems()) {
-    		Mesh mesh = gameItem.getMesh();
-    		
-    		// Set ortohtaphic and model matrix for this HUD item
-    		Matrix4f projModelMatrix = transformation.getOrtoProjModelMatrix(gameItem, ortho);
-	    	hudShaderProgram.setUniform("projModelMatrix", projModelMatrix);
-	    	hudShaderProgram.setUniform("texture_sampler", 0);
-	    	
-	    	// Render the mesh for this HUD item
-	    	mesh.render();
-    	}
-    	hudShaderProgram.unbind();
-    }
-    
-    private void setupHudShader() throws Exception {
-    	hudShaderProgram = new ShaderProgram();
-    	hudShaderProgram.createVertexShader(Utils.loadResource("/shaders/hud_vertex.vs"));
-    	hudShaderProgram.createFragmentShader(Utils.loadResource("/shaders/hud_fragment.fs"));
-    	hudShaderProgram.link();
-    	// Create uniforms for Ortographic-model projection matrix and base colour
-    	hudShaderProgram.createUniform("projModelMatrix");
-    	hudShaderProgram.createUniform("texture_sampler");
-    //	hudShaderProgram.createMaterialUniform("material");
-    //	hudShaderProgram.createUniform("colour");
     }
 
     public void cleanup() {
         if (shaderProgram != null) {
             shaderProgram.cleanup();
-        }
-        if (hudShaderProgram != null) {
-            hudShaderProgram.cleanup();
         }
     }
 }
