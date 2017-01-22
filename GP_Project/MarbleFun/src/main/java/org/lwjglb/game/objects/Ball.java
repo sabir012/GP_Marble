@@ -62,7 +62,7 @@ public class Ball extends GameItem implements Gravitable{
 	}
     
 	private void calculateMass() {
-		mass = 1;//(float) (4.0/3.0*Math.PI*(radius*Math.pow(10, -4))*material.getMass());
+		mass = (float) (4.0/3.0*Math.PI*(radius*Math.pow(10, -4))*material.getMass());
 		System.out.println(mass);
 	}
     
@@ -150,19 +150,8 @@ public class Ball extends GameItem implements Gravitable{
 	private float frontalAreaOfTheBall;
 	private float densityOfAir = 1.2f;// Density of air. Try 1000 for water.
 	
-	public void calculateFinalForce(){
-		frontalAreaOfTheBall = (float)Math.PI * radius * radius / 10000;
-		
-		this.force = this.force.add(new Vector3f(0,(float)(mass * 9.81),0)); 
-		this.force = this.force.add(new Vector3f((float)(-1 * 0.5 * densityOfAir * coefficientOfDrag * frontalAreaOfTheBall * velocity.x * velocity.x),
-				(float)(-1 * 0.5 * densityOfAir * coefficientOfDrag * frontalAreaOfTheBall * velocity.y * velocity.y),
-				(float)(-1 * 0.5 * densityOfAir * coefficientOfDrag * frontalAreaOfTheBall * velocity.z * velocity.z)));
-	}
-	
-	
 	public void updateGravity(float dt){
 		Vector3f position = this.getPosition();
-		
 		
 		frontalAreaOfTheBall = (float)Math.PI * radius * radius / 10000;
 		

@@ -77,7 +77,7 @@ public class MarbleGame implements IGameLogic {
         Ball gameItem2 = new Ball(mesh2,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
         gameItem2.setPosition(-5f, 4.5f, -10);
 
-        Ball gameItem = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.GOLD);
+        Ball gameItem = new Ball(mesh,0.2f, new Vector3f(), PhysicalMaterial.STEEL);
         gameItem.setPosition(-7f, 5f, -10);
 
         
@@ -153,8 +153,8 @@ public class MarbleGame implements IGameLogic {
           Ball ball1 = (Ball)gameItems[0];
           Ball ball2 = (Ball)gameItems[1];
           
-          ball1.updateGravity(interval*0.03f);
-          ball2.updateGravity(interval*0.03f);
+          ball1.updateGravity(interval*0.05f);
+          ball2.updateGravity(interval*0.05f);
           
           if(ball1.isCollide(ball2)){
         	  ball1.handleBallCollision(ball2);
