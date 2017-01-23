@@ -26,7 +26,7 @@ public class Window {
     private GLFWWindowSizeCallback windowSizeCallback;
 
     private boolean resized;
-
+    
     private boolean vSync;
 
     public Window(String title, int width, int height, boolean vSync) {
@@ -47,7 +47,6 @@ public class Window {
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
-
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); // the window will be resizable

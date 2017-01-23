@@ -3,6 +3,7 @@ package org.lwjglb.game;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*; 
 
 import java.util.Random;
 
@@ -11,19 +12,22 @@ import org.lwjglb.engine.GameItemType;
 import org.lwjglb.engine.IGameLogic;
 import org.lwjglb.engine.MouseInput;
 import org.lwjglb.engine.Window;
+import org.lwjglb.engine.particleSystem;
 import org.lwjglb.engine.graph.Camera;
 import org.lwjglb.engine.graph.Material;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.OBJLoader;
 import org.lwjglb.engine.graph.Texture;
 import org.lwjglb.game.objects.Ball;
+import org.lwjglb.game.objects.Particle;
 import org.lwjglb.game.objects.PhysicalMaterial;
 import org.lwjglb.game.objects.Track;
 import org.lwjglb.engine.graph.PointLight;
 import org.lwjglb.engine.graph.DirectionalLight;
 
 public class MarbleGame implements IGameLogic {
-
+	
+	private particleSystem sph;
 
     private static final float MOUSE_SENSITIVITY = 0.2f;
 
@@ -56,7 +60,7 @@ public class MarbleGame implements IGameLogic {
     @Override
     public void init(Window window) throws Exception {
         renderer.init(window);
-        
+        init_sph();
         float reflectance = 1f;
         
         Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
@@ -75,22 +79,10 @@ public class MarbleGame implements IGameLogic {
         Ball gameItem2 = new Ball(mesh2,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
         gameItem2.setPosition(-5f, 4.5f, -10);
 
-        Ball gameItem = new Ball(mesh,0.2f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem.setPosition(-7f, 5f, -10);
-
         
-        tracks = new Track[] {
-        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -8, 4, 0, 2, PhysicalMaterial.GRAS),
-        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f,2,5f,1.5f, PhysicalMaterial.WOOD),
-        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6.5f,-3,6.5f,3, PhysicalMaterial.GOLD),
-        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -4f,-1.5f,7,-1.5f, PhysicalMaterial.STEEL),
-        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f,2f,-7f,-5f, PhysicalMaterial.PLASTIC),
-        	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f,-3f,5f,-7f, PhysicalMaterial.PLASTIC),
-        };
         
         gameItems = new GameItem[tracks.length+1];
-        gameItems[0] = gameItem;
-        gameItems[1] = gameItem2;
+        gameItems[0] = gameItem2;
         for (int i = 2; i < gameItems.length; i++) {
 			gameItems[i] = tracks[i-1];
 		}
@@ -169,6 +161,24 @@ public class MarbleGame implements IGameLogic {
     @Override
     public void render(Window window) {
     	renderer.render(window, camera, gameItems, ambientLight, pointLight, directionalLight);
+    }
+    
+    public void init_sph(){
+    	sph=new particleSystem();
+    	sph.init_system();
+    }
+    
+    public void display_particle(){
+    	glPushAttrib(GL_ALL_ATTRIB_BITS);
+        glBegin(GL_POINTS);
+        Particle particle;
+        for (int i=0; i<sph.particleN; i++) {
+        	particle = sph.particles.get(i);
+            glColor3f(1.0f, 0.0f, 0.0f);
+            glVertex2f(particle.getPosition().x, particle.getPosition().y);
+        }
+        glEnd();
+        glPopAttrib();
     }
 
     @Override
