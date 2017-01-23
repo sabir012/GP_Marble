@@ -35,6 +35,7 @@ public class MarbleGame implements IGameLogic {
 
     private GameItem[] gameItems;
     private Track[] tracks;
+    private Ball[] balls;
     
     private Vector3f ambientLight;
 
@@ -74,11 +75,14 @@ public class MarbleGame implements IGameLogic {
         trackMesh.setMaterial(material);
 
 
-        Ball gameItem2 = new Ball(mesh2,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem2.setPosition(-5f, 4.5f, -10);
 
-        Ball gameItem = new Ball(mesh,0.2f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem.setPosition(-7f, 5f, -10);
+//        Ball gameItem = new Ball(mesh,0.2f, new Vector3f(), PhysicalMaterial.STEEL);
+//        gameItem.setPosition(-7f, 5f, -10);
+        
+        balls = new Ball[] {
+        		new Ball(mesh2,0.3f, new Vector3f(), PhysicalMaterial.STEEL, -5f, 4.5f, -10),
+        		new Ball(mesh,0.2f, new Vector3f(), PhysicalMaterial.STEEL, -7f, 5f, -10)
+        };
 
         
         tracks = new Track[] {
@@ -90,11 +94,14 @@ public class MarbleGame implements IGameLogic {
         	new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f,-3f,5f,-7f, PhysicalMaterial.PLASTIC),
         };
         
-        gameItems = new GameItem[tracks.length+1];
-        gameItems[0] = gameItem;
-        gameItems[1] = gameItem2;
-        for (int i = 2; i < gameItems.length; i++) {
-			gameItems[i] = tracks[i-1];
+        gameItems = new GameItem[tracks.length+balls.length];
+        
+        
+        for (int i = 0; i < balls.length; i++) {
+			gameItems[i] = balls[i];
+		}
+        for (int i = balls.length; i < gameItems.length; i++) {
+			gameItems[i] = tracks[i-balls.length];
 		}
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
@@ -159,6 +166,7 @@ public class MarbleGame implements IGameLogic {
           if(ball1.isCollide(ball2)){
         	  ball1.handleBallCollision(ball2);
           }
+          
           
           for (Track track : tracks) {
         	  if (track.isCollide(ball1)) {

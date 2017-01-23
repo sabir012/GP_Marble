@@ -17,19 +17,21 @@ public class Ball extends GameItem implements Gravitable{
 	private float mass;
 	private float perimeter;
 	private PhysicalMaterial material;
+	private boolean hasJustColided = false;
+	
 	
 	public Ball(Mesh mesh) throws Exception {
-		this(mesh,1,new Vector3f(),PhysicalMaterial.PLASTIC);
+		this(mesh,1,new Vector3f(),PhysicalMaterial.PLASTIC, 0, 0 ,0);
 	}
 	
-	public Ball(Mesh mesh,float radius, Vector3f velocity,PhysicalMaterial material) throws Exception {
+	public Ball(Mesh mesh,float radius, Vector3f velocity,PhysicalMaterial material, float posX, float posY, float posZ) throws Exception {
 		super(mesh);
 		this.velocity = velocity;
 		this.material = material;
 		this.radius = radius;
 		this.setScale(radius);
 		calculateMass();
-		
+		setPosition(posX, posY, posZ);
 		Texture tex = new Texture(material.getTexturePath());
 		
 		Material mat = new Material(tex,0f);
@@ -136,7 +138,7 @@ public class Ball extends GameItem implements Gravitable{
   	                           (currentBallPosition.y - ballPosition.y) * (currentBallPosition.y - ballPosition.y) +
   	                           (currentBallPosition.z - ballPosition.z) * (currentBallPosition.z - ballPosition.z));
       
-      System.out.println("Distance: "+distance);
+      //System.out.println("Distance: "+distance);
       
       return distance < (this.radius + ball.radius); 
 	}
@@ -190,5 +192,18 @@ public class Ball extends GameItem implements Gravitable{
 	
 	public Vector3f getVelocity(){
 		return velocity;
+	}
+
+	public boolean isHasJustColided() {
+		return hasJustColided;
+	}
+
+	public void setHasJustColided(boolean hasJustColided) {
+		if (this.hasJustColided != hasJustColided) {
+			System.out.println("coll state change");
+		}
+		
+		
+		this.hasJustColided = hasJustColided;
 	}
 }

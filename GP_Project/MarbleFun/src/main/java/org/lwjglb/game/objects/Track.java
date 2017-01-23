@@ -95,6 +95,12 @@ public class Track extends GameItem {
 			} else if (point.x>=s.x && point.x<=e.x) { // ball on track
 				collision = true;
 				normalAngle = 90 + slope;
+				boolean aboveTrack = ballPos.y-point.y>=0;
+				if (aboveTrack) {
+					normalAngle = 90 + slope;
+				} else {
+					normalAngle = -90 + slope;
+				}
 			} else { // collision with end or start point of track
 				Vector3f b = new Vector3f(ballPos.x, s.y, 1);
 				if (point.x<s.x) { // at start
@@ -108,25 +114,22 @@ public class Track extends GameItem {
 					collision = true;
 				}
 			}
+			System.out.println("distance "+distance);
 		} else {
 			collision = false;
+			
 		}
 		if (collision) {
 			
 			Vector3f v = new Vector3f(-ball.getVelocity().x, -ball.getVelocity().y, 0);
 			Vector3f h = new Vector3f(1,0,0);
 			velocityAngle = (float) Math.toDegrees(Math.acos(v.dot(h)/(v.length()*h.length())));
+			velocityAngle = ball.getVelocity().y<0 ? -velocityAngle : velocityAngle;
 			float phi = normalAngle - velocityAngle;
 			float newVelocityAngle = normalAngle + phi;
-			
-			System.out.println(velocityAngle);
-			System.out.println(normalAngle);
-			System.out.println(newVelocityAngle);
 			newVelocityAngle = (float) Math.toRadians(newVelocityAngle);
-			ball.setVelocity(new Vector3f((float) Math.cos(newVelocityAngle)*v.length(), (float) -Math.sin(newVelocityAngle)*v.length(), ball.getVelocity().z));
-			v = new Vector3f(ball.getVelocity().x, ball.getVelocity().y, 0);
-			velocityAngle = (float) Math.toDegrees(Math.acos(v.dot(h)/(v.length()*h.length())));
-			System.out.println(velocityAngle);
+			ball.setVelocity(new Vector3f((float) Math.cos(newVelocityAngle)*v.length()*material.getDamping(), (float) -Math.sin(newVelocityAngle)*v.length()*material.getDamping(), ball.getVelocity().z));
+			ball.setPosition(ball.getPosition().x+(float) Math.cos(newVelocityAngle)*0.1f, ball.getPosition().y+(float) Math.sin(newVelocityAngle)*0.1f, ball.getPosition().z);
 		}
 		return collision;
 	}
