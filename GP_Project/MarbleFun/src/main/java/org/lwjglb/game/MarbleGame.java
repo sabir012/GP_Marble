@@ -62,7 +62,7 @@ public class MarbleGame implements IGameLogic {
         
         float reflectance = 1f;
         
-        Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
+        Mesh mesh = OBJLoader.loadMesh(GameItemType.TRACK);
         Mesh trackMesh = OBJLoader.loadMesh(GameItemType.TRACK);
         Mesh mesh2 = OBJLoader.loadMesh(GameItemType.BALL);
         
@@ -73,15 +73,11 @@ public class MarbleGame implements IGameLogic {
         mesh.setMaterial(material);
         mesh2.setMaterial(material);
         trackMesh.setMaterial(material);
-
-
-
-//        Ball gameItem = new Ball(mesh,0.2f, new Vector3f(), PhysicalMaterial.STEEL);
-//        gameItem.setPosition(-7f, 5f, -10);
         
         balls = new Ball[] {
-        		new Ball(mesh2,0.3f, new Vector3f(), PhysicalMaterial.STEEL, -5f, 4.5f, -10),
-        		new Ball(mesh,0.2f, new Vector3f(), PhysicalMaterial.STEEL, -7f, 5f, -10)
+        		new Ball(OBJLoader.loadMesh(GameItemType.BALL),0.3f, new Vector3f(), PhysicalMaterial.STEEL, -5f, 4.5f, -10),
+        		new Ball(OBJLoader.loadMesh(GameItemType.BALL),0.2f, new Vector3f(), PhysicalMaterial.STEEL, -7f, 5f, -10),
+        		new Ball(OBJLoader.loadMesh(GameItemType.BALL),0.3f, new Vector3f(), PhysicalMaterial.STEEL, -6f, 4.5f, -10)
         };
 
         
@@ -159,14 +155,21 @@ public class MarbleGame implements IGameLogic {
         
           Ball ball1 = (Ball)gameItems[0];
           Ball ball2 = (Ball)gameItems[1];
+          Ball ball3 = (Ball)gameItems[2];
           
           ball1.updateGravity(interval*0.05f);
           ball2.updateGravity(interval*0.05f);
+          ball3.updateGravity(interval*0.05f);
           
           if(ball1.isCollide(ball2)){
         	  ball1.handleBallCollision(ball2);
           }
-          
+          if(ball1.isCollide(ball3)){
+        	  ball1.handleBallCollision(ball3);
+          }
+          if(ball2.isCollide(ball3)){
+        	  ball2.handleBallCollision(ball3);
+          }
           
           for (Track track : tracks) {
         	  if (track.isCollide(ball1)) {
@@ -175,6 +178,9 @@ public class MarbleGame implements IGameLogic {
         	  if (track.isCollide(ball2)) {
          		 System.out.println("Collided Ball2");
          	  }
+        	  if (track.isCollide(ball3)) {
+          		 System.out.println("Collided Ball3");
+          	  }
           }
     }
 
