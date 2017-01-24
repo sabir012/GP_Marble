@@ -7,12 +7,14 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjglb.engine.GameItem;
 import org.lwjglb.engine.Utils;
 import org.lwjglb.engine.Window;
+import org.lwjglb.engine.particleSystem;
 import org.lwjglb.engine.graph.Camera;
 import org.lwjglb.engine.graph.DirectionalLight;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.PointLight;
 import org.lwjglb.engine.graph.ShaderProgram;
 import org.lwjglb.engine.graph.Transformation;
+import org.lwjglb.game.objects.Particle;
 
 public class Renderer {
 
@@ -28,6 +30,7 @@ public class Renderer {
     private final Transformation transformation;
 
     private ShaderProgram shaderProgram;
+    private ShaderProgram pshaderProgram;
 
     private final float specularPower;
 
@@ -39,6 +42,12 @@ public class Renderer {
     public void init(Window window) throws Exception {
         // Create shader
         shaderProgram = new ShaderProgram();
+        
+        pshaderProgram = new ShaderProgram();
+        pshaderProgram.createVertexShader(Utils.loadResource("/shaders/particleVShader.vs"));
+        pshaderProgram.createFragmentShader(Utils.loadResource("/shaders/particleFShader.fs"));
+        pshaderProgram.link();
+        
         shaderProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vs"));
         shaderProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
         shaderProgram.link();
@@ -61,7 +70,7 @@ public class Renderer {
     }
 
     public void render(Window window, Camera camera, GameItem[] gameItems, Vector3f ambientLight,
-        PointLight pointLight, DirectionalLight directionalLight) {
+        PointLight pointLight, DirectionalLight directionalLight, particleSystem sph) {
         
         clear();
 
@@ -71,6 +80,7 @@ public class Renderer {
         }
 
         shaderProgram.bind();
+        pshaderProgram.bind();
         
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
@@ -101,7 +111,7 @@ public class Renderer {
         
         shaderProgram.setUniform("texture_sampler", 0);
         // Render each gameItem
-        for(GameItem gameItem : gameItems) {
+     /*   for(GameItem gameItem : gameItems) {
             Mesh mesh = gameItem.getMesh();
             // Set model view matrix for this item
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
@@ -109,9 +119,15 @@ public class Renderer {
             // Render the mesh for this game item
             shaderProgram.setUniform("material", mesh.getMaterial());
             mesh.render();
+        }*/
+        
+        //Render each particle
+        for(Particle particle: sph.particles){
+        	particle.render();
         }
 
         shaderProgram.unbind();
+        pshaderProgram.unbind();
     }
 
     public void cleanup() {

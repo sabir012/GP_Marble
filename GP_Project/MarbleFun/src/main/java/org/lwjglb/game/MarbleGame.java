@@ -2,9 +2,15 @@ package org.lwjglb.game;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*; 
+import static org.lwjgl.opengl.GL11.*;
 
+import java.nio.FloatBuffer;
 import java.util.Random;
 
 import org.lwjglb.engine.GameItem;
@@ -63,29 +69,20 @@ public class MarbleGame implements IGameLogic {
         init_sph();
         float reflectance = 1f;
         
-        Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
-        Mesh trackMesh = OBJLoader.loadMesh(GameItemType.TRACK);
-        Mesh mesh2 = OBJLoader.loadMesh(GameItemType.BALL);
+   /*     Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
         
         Texture texture = new Texture("/textures/marbleRed.png");
         
         Material material = new Material(texture, reflectance);
         
         mesh.setMaterial(material);
-        mesh2.setMaterial(material);
-        trackMesh.setMaterial(material);
 
 
-        Ball gameItem2 = new Ball(mesh2,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
-        gameItem2.setPosition(-5f, 4.5f, -10);
+        Ball gameItem = new Ball(mesh,0.3f, new Vector3f(), PhysicalMaterial.STEEL);
+        gameItem.setPosition(-5f, 4.5f, -10);*/
 
-        
-        
-        gameItems = new GameItem[tracks.length+1];
-        gameItems[0] = gameItem2;
-        for (int i = 2; i < gameItems.length; i++) {
-			gameItems[i] = tracks[i-1];
-		}
+     
+    //    gameItems[0] = gameItem;
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
@@ -138,7 +135,7 @@ public class MarbleGame implements IGameLogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
         
-          Ball ball1 = (Ball)gameItems[0];
+      /*    Ball ball1 = (Ball)gameItems[0];
           Ball ball2 = (Ball)gameItems[1];
           
           ball1.updateGravity(interval*0.05f);
@@ -155,37 +152,30 @@ public class MarbleGame implements IGameLogic {
         	  if (track.isCollide(ball2)) {
          		 System.out.println("Collided Ball2");
          	  }
-          }
+          }*/
     }
 
     @Override
     public void render(Window window) {
-    	renderer.render(window, camera, gameItems, ambientLight, pointLight, directionalLight);
+    	sph.animation();
+    	renderer.render(window, camera, gameItems, ambientLight, pointLight, directionalLight, sph);
+    	
+    //	display_particle();
     }
     
-    public void init_sph(){
+    public void init_sph() throws Exception{
+    //	Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
     	sph=new particleSystem();
     	sph.init_system();
     }
     
-    public void display_particle(){
-    	glPushAttrib(GL_ALL_ATTRIB_BITS);
-        glBegin(GL_POINTS);
-        Particle particle;
-        for (int i=0; i<sph.particleN; i++) {
-        	particle = sph.particles.get(i);
-            glColor3f(1.0f, 0.0f, 0.0f);
-            glVertex2f(particle.getPosition().x, particle.getPosition().y);
-        }
-        glEnd();
-        glPopAttrib();
-    }
+    
 
     @Override
     public void cleanup() {
         renderer.cleanup();
-        for (GameItem gameItem : gameItems) {
+    /*    for (GameItem gameItem : gameItems) {
             gameItem.getMesh().cleanUp();
-        }
+        }*/
     }
 }
