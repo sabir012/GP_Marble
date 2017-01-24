@@ -9,9 +9,9 @@ public class Main {
     	System.setProperty("java.awt.headless", "true");
         try {
             boolean vSync = true;
-            IGameLogic gameLogic = new MarbleGame();
-            GameEngine gameEng = new GameEngine("GAME", 800, 600, vSync, gameLogic);
-            gameEng.start();
+            IGameLogic logic = new MarbleGame();
+            GameEngine engine = new GameEngine("GAME", 900, 700, vSync, logic);
+            engine.start();
         } catch (Exception excp) {
             excp.printStackTrace();
             System.exit(-1);

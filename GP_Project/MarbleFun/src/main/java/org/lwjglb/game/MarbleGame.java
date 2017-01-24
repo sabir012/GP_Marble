@@ -1,7 +1,10 @@
 package org.lwjglb.game;
 
 import org.joml.Vector2f;
+
 import org.joml.Vector3f;
+import org.lwjgl.openal.AL11;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.Random;
@@ -16,6 +19,11 @@ import org.lwjglb.engine.graph.Material;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.OBJLoader;
 import org.lwjglb.engine.graph.Texture;
+import org.lwjglb.engine.sound.SoundBuffer;
+import org.lwjglb.engine.sound.SoundListener;
+import org.lwjglb.engine.sound.SoundManager;
+import org.lwjglb.engine.sound.SoundSource;
+import org.lwjglb.engine.sound.Sounds;
 import org.lwjglb.game.objects.Ball;
 import org.lwjglb.game.objects.PhysicalMaterial;
 import org.lwjglb.game.objects.Track;
@@ -23,7 +31,6 @@ import org.lwjglb.engine.graph.PointLight;
 import org.lwjglb.engine.graph.DirectionalLight;
 
 public class MarbleGame implements IGameLogic {
-
 	private static final float MOUSE_SENSITIVITY = 0.2f;
 
 	private final Vector3f cameraInc;
@@ -31,6 +38,8 @@ public class MarbleGame implements IGameLogic {
 	private final Renderer renderer;
 
 	private final Camera camera;
+	
+	private final SoundManager soundManager;
 
 	private GameItem[] gameItems;
 	private Track[] tracks;
@@ -51,6 +60,7 @@ public class MarbleGame implements IGameLogic {
 	public MarbleGame() {
 		renderer = new Renderer();
 		camera = new Camera();
+		soundManager = new SoundManager();
 		cameraInc = new Vector3f(0, 0, 0);
 		lightAngle = 10;
 	}
@@ -58,7 +68,8 @@ public class MarbleGame implements IGameLogic {
 	@Override
 	public void init(Window window) throws Exception {
 		renderer.init(window);
-
+		soundManager.init();
+		
 		float reflectance = 1f;
 
 		Mesh mesh = OBJLoader.loadMesh(GameItemType.TRACK);
@@ -78,12 +89,12 @@ public class MarbleGame implements IGameLogic {
 						-10),
 				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.2f, new Vector3f(), PhysicalMaterial.STEEL, -7f, 5f,
 						-10),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -6f, 4.5f,
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -3f, 4.5f,
 						-10) };
 
 		tracks = new Track[] { new Track(OBJLoader.loadMesh(GameItemType.TRACK), -8, 4, 0, 2, PhysicalMaterial.GRAS),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f, 2, 5f, 1.5f, PhysicalMaterial.WOOD),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6.5f, -3, 6.5f, 3, PhysicalMaterial.GOLD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6f, -3, 6.5f, 3, PhysicalMaterial.GOLD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -4f, -1.5f, 7, -1.5f, PhysicalMaterial.STEEL),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f, 2f, -7f, -5f, PhysicalMaterial.PLASTIC),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f, -3f, 5f, -7f, PhysicalMaterial.PLASTIC), };
@@ -111,8 +122,30 @@ public class MarbleGame implements IGameLogic {
 
 		// Create HUD
 		hud = new Hud();
+		
+		//Sound
+        this.soundManager.init();
+        this.soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
+        setupSounds();
 	}
 
+	private void setupSounds() throws Exception {
+		SoundBuffer backSound = new SoundBuffer("/sounds/backMusic.ogg");
+        soundManager.addSoundBuffer(backSound);
+        SoundSource sourceBack = new SoundSource(true, true);
+        sourceBack.setBuffer(backSound.getBufferId());
+        soundManager.addSoundSource(Sounds.MUSIC.toString(), sourceBack);
+		
+        SoundBuffer soundCollision = new SoundBuffer("/sounds/collision.ogg");
+        soundManager.addSoundBuffer(soundCollision);
+        SoundSource sourcebuffCollision = new SoundSource(false, true);
+        sourcebuffCollision.setBuffer(soundCollision.getBufferId());
+        soundManager.addSoundSource(Sounds.BEEP.toString(), sourcebuffCollision);
+        
+        soundManager.setListener(new SoundListener(new Vector3f(0, 0, 0)));
+
+        sourceBack.play();        
+    }
 	@Override
 	public void input(Window window, MouseInput mouseInput) {
 		cameraInc.set(0, 0, 0);
@@ -151,20 +184,21 @@ public class MarbleGame implements IGameLogic {
 			camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 		}
 
-		
-
 		for (int i=0; i<balls.length; i++) {
 			balls[i].updateGravity(interval * 0.05f);
 			for (int j=i+1; j<balls.length; j++) {
 				if (balls[i].isCollide(balls[j])) {
 					balls[i].handleBallCollision(balls[j]);
+					soundManager.playSoundSource(Sounds.BEEP.toString());
 				}
 			}
 		}
 		
 		for (Track track : tracks) {
 			for (Ball ball : balls) {
-				track.isCollide(ball);
+				if(track.isCollide(ball)){
+					soundManager.playSoundSource(Sounds.BEEP.toString());
+				}
 			}
 		}
 	}
