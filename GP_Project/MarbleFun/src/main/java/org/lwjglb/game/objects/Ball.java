@@ -7,6 +7,7 @@ import org.lwjglb.engine.graph.Material;
 import org.lwjglb.engine.graph.Mesh;
 
 import org.lwjglb.engine.graph.Texture;
+import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -17,7 +18,8 @@ public class Ball extends GameItem implements Gravitable{
 	private float mass;
 	private float perimeter;
 	private PhysicalMaterial material;
-	private boolean hasJustColided = false;
+	private Vector2f deformationNormal;
+	private float deformationAmount;
 	
 	
 	public Ball(Mesh mesh) throws Exception {
@@ -192,18 +194,5 @@ public class Ball extends GameItem implements Gravitable{
 	
 	public Vector3f getVelocity(){
 		return velocity;
-	}
-
-	public boolean isHasJustColided() {
-		return hasJustColided;
-	}
-
-	public void setHasJustColided(boolean hasJustColided) {
-		if (this.hasJustColided != hasJustColided) {
-			System.out.println("coll state change");
-		}
-		
-		
-		this.hasJustColided = hasJustColided;
 	}
 }

@@ -119,8 +119,7 @@ public class Track extends GameItem {
 			collision = false;
 			
 		}
-		if (collision) {
-			
+		if (collision) {	
 			Vector3f v = new Vector3f(-ball.getVelocity().x, -ball.getVelocity().y, 0);
 			Vector3f h = new Vector3f(1,0,0);
 			velocityAngle = (float) Math.toDegrees(Math.acos(v.dot(h)/(v.length()*h.length())));
@@ -129,7 +128,7 @@ public class Track extends GameItem {
 			float newVelocityAngle = normalAngle + phi;
 			newVelocityAngle = (float) Math.toRadians(newVelocityAngle);
 			ball.setVelocity(new Vector3f((float) Math.cos(newVelocityAngle)*v.length()*material.getDamping(), (float) -Math.sin(newVelocityAngle)*v.length()*material.getDamping(), ball.getVelocity().z));
-			ball.setPosition(ball.getPosition().x+(float) Math.cos(newVelocityAngle)*0.1f, ball.getPosition().y+(float) Math.sin(newVelocityAngle)*0.1f, ball.getPosition().z);
+			ball.setPosition(ball.getPosition().x+(float) Math.cos(newVelocityAngle)*0.001f*v.length(), ball.getPosition().y+(float) Math.sin(newVelocityAngle)*0.001f*v.length(), ball.getPosition().z);
 		}
 		return collision;
 	}
