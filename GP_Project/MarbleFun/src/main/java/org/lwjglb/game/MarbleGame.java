@@ -7,6 +7,8 @@ import org.lwjgl.openal.AL11;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import org.lwjglb.engine.GameItem;
@@ -54,7 +56,9 @@ public class MarbleGame implements IGameLogic {
 	private float lightAngle;
 
 	private Hud hud;
-
+	
+	private boolean updateActive=true;
+	private Date preRunDate = new Date();
 	private static final float CAMERA_POS_STEP = 0.05f;
 
 	public MarbleGame() {
@@ -164,6 +168,36 @@ public class MarbleGame implements IGameLogic {
 		} else if (window.isKeyPressed(GLFW_KEY_X)) {
 			cameraInc.y = 1;
 		}
+		else if (window.isKeyPressed(GLFW_KEY_B)) { //Working period 3 seconds
+			try{
+				updateActive = false;
+				Calendar calobj = Calendar.getInstance();
+				Date date = calobj.getTime();
+				
+				long secondsBetween = (date.getTime()-preRunDate.getTime())/1000;
+				
+				if(secondsBetween>5){
+					preRunDate = date;
+					Ball ball = new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -5f, 5.5f,-10);
+			
+					Ball[] newBalls = new Ball[balls.length+1];
+					newBalls[newBalls.length-1] = ball;
+					System.arraycopy(balls, 0, newBalls, 0, balls.length);
+					balls = newBalls;
+			
+					GameItem[] newGameItems = new GameItem[tracks.length + balls.length];
+					System.arraycopy(gameItems, 0, newGameItems, 0, gameItems.length);
+					newGameItems[newGameItems.length-1] = ball;
+					gameItems = newGameItems;
+				}
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+			}
+			finally{
+				updateActive = true;
+			}
+		}
 		/*
 		 * float lightPos = pointLight.getPosition().z; if
 		 * (window.isKeyPressed(GLFW_KEY_N)) { this.pointLight.getPosition().z =
@@ -174,6 +208,7 @@ public class MarbleGame implements IGameLogic {
 
 	@Override
 	public void update(float interval, MouseInput mouseInput) {
+		if(updateActive){
 		// Update camera position
 		camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP,
 				cameraInc.z * CAMERA_POS_STEP);
@@ -200,6 +235,7 @@ public class MarbleGame implements IGameLogic {
 					soundManager.playSoundSource(Sounds.BEEP.toString());
 				}
 			}
+		}
 		}
 	}
 
