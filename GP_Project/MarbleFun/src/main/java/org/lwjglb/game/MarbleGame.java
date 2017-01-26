@@ -195,7 +195,7 @@ public class MarbleGame implements IGameLogic {
 					System.arraycopy(balls, 0, newBalls, 0, balls.length);
 					balls = newBalls;
 			
-					GameItem[] newGameItems = new GameItem[tracks.length + balls.length];
+					GameItem[] newGameItems = new GameItem[tracks.length + balls.length+grass.length];
 					System.arraycopy(gameItems, 0, newGameItems, 0, gameItems.length);
 					newGameItems[newGameItems.length-1] = ball;
 					gameItems = newGameItems;
