@@ -107,6 +107,8 @@ public class Renderer {
         shaderProgram.setUniform("texture_sampler", 0);
         // Render each gameItem
         for(GameItem gameItem : gameItems) {
+        	GameItem[] subItems = gameItem.getSubItems();
+        	
             Mesh mesh = gameItem.getMesh();
             // Set model view matrix for this item
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
@@ -114,6 +116,18 @@ public class Renderer {
             // Render the mesh for this game item
             shaderProgram.setUniform("material", mesh.getMaterial());
             mesh.render();
+            
+            if (subItems!=null) {
+	        	for (GameItem subItem : subItems) {
+	        		mesh = subItem.getMesh();
+	                // Set model view matrix for this item
+	                modelViewMatrix = transformation.getModelViewMatrix(subItem, viewMatrix);
+	                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);            
+	                // Render the mesh for this game item
+	                shaderProgram.setUniform("material", mesh.getMaterial());
+	                mesh.render();
+				}
+        	}
         }
 
         shaderProgram.unbind();

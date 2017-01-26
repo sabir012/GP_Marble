@@ -27,6 +27,7 @@ import org.lwjglb.engine.sound.SoundManager;
 import org.lwjglb.engine.sound.SoundSource;
 import org.lwjglb.engine.sound.Sounds;
 import org.lwjglb.game.objects.Ball;
+import org.lwjglb.game.objects.Grasspatch;
 import org.lwjglb.game.objects.PhysicalMaterial;
 import org.lwjglb.game.objects.Track;
 import org.lwjglb.engine.graph.PointLight;
@@ -47,6 +48,8 @@ public class MarbleGame implements IGameLogic {
 	private Track[] tracks;
 	private Ball[] balls;
 
+	private Grasspatch[] grass;
+	
 	private Vector3f ambientLight;
 
 	private PointLight pointLight;
@@ -88,6 +91,10 @@ public class MarbleGame implements IGameLogic {
 		mesh2.setMaterial(material);
 		trackMesh.setMaterial(material);
 
+		grass = new Grasspatch[] {
+				new Grasspatch(-40f, -20f, -100f, 80f, 80f, 5)
+			};
+		
 		balls = new Ball[] {
 				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -5f, 4.5f,
 						-10),
@@ -103,13 +110,16 @@ public class MarbleGame implements IGameLogic {
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f, 2f, -7f, -5f, PhysicalMaterial.PLASTIC),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f, -3f, 5f, -7f, PhysicalMaterial.PLASTIC), };
 
-		gameItems = new GameItem[tracks.length + balls.length];
+		gameItems = new GameItem[tracks.length + balls.length+grass.length];
 
 		for (int i = 0; i < balls.length; i++) {
 			gameItems[i] = balls[i];
 		}
-		for (int i = balls.length; i < gameItems.length; i++) {
+		for (int i = balls.length; i < balls.length+tracks.length; i++) {
 			gameItems[i] = tracks[i - balls.length];
+		}
+		for (int i = balls.length+tracks.length; i < balls.length+tracks.length+grass.length; i++) {
+			gameItems[i] = grass[i - balls.length-tracks.length];
 		}
 
 		ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
@@ -212,13 +222,18 @@ public class MarbleGame implements IGameLogic {
 		// Update camera position
 		camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP,
 				cameraInc.z * CAMERA_POS_STEP);
-
+		
 		// Update camera based on mouse
 		if (mouseInput.isRightButtonPressed()) {
 			Vector2f rotVec = mouseInput.getDisplVec();
 			camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 		}
 
+		float windstrength = 0.2f;
+		for (Grasspatch grass: grass) {
+			grass.animate(windstrength, interval);
+		}
+		
 		for (int i=0; i<balls.length; i++) {
 			balls[i].updateGravity(interval * 0.05f);
 			for (int j=i+1; j<balls.length; j++) {

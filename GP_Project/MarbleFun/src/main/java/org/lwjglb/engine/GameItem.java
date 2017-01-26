@@ -11,18 +11,22 @@ public abstract class GameItem {
     private final Vector3f position;
     
     private float scale;
+    
+    private Vector3f shearing;
 
     private final Vector3f rotation;
     
     public GameItem() {
         position = new Vector3f(0, 0, 0);
         scale = 1;
+        shearing = new Vector3f();
         rotation = new Vector3f(0, 0, 0);
     }
 
     public GameItem(Mesh mesh) {
         this.mesh = mesh;
         position = new Vector3f(0, 0, 0);
+        shearing = new Vector3f();
         scale = 1;
         rotation = new Vector3f(0, 0, 0);
     }
@@ -63,5 +67,18 @@ public abstract class GameItem {
     
     public void setMesh(Mesh mesh) {
         this.mesh = mesh;
+    }
+    
+    public Vector3f getShearing() {
+        return shearing;
+    }
+
+    public void setShearing(float x, float y) {
+        this.shearing.x = x;
+        this.shearing.y = y;
+    }
+    
+    public GameItem[] getSubItems() {
+    	return null;
     }
 }

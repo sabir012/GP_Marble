@@ -2,8 +2,9 @@ package org.lwjglb.game.objects;
 
 
 public enum PhysicalMaterial {
-	STEEL(7850, 0.95f, "/textures/monster/hellknight.png"), GOLD(19320, 0.95f, "/textures/gold.png"), 
-    WOOD(600, 0.95f, "/textures/wood.png"), PLASTIC(950, 0.95f, "/textures/marbleRed.png"), GRAS(200, 0.95f, "/textures/grassscape.png");
+	STEEL(7850, 0.95f, "/textures/steel.png"), GOLD(19320, 0.95f, "/textures/gold.png"), 
+    WOOD(600, 0.95f, "/textures/wood.png"), PLASTIC(950, 0.95f, "/textures/marbleRed.png"), GRAS(200, 0.95f, "/textures/grass.png"),
+    GRASSIDE(200, 0.95f, "/textures/grassside.png");
      
     private final int mass; // kg per cubic metre 
     private final float damping;

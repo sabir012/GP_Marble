@@ -61,6 +61,12 @@ public class Transformation {
                 rotateY((float)Math.toRadians(-rotation.y)).
                 rotateZ((float)Math.toRadians(-rotation.z)).
                 scale(gameItem.getScale());
+        Matrix4f shearingMatrix = new Matrix4f();
+		shearingMatrix.m00(0); shearingMatrix.m11(0); shearingMatrix.m22(0); shearingMatrix.m33(0);
+        shearingMatrix.m10(gameItem.getShearing().x);
+        shearingMatrix.m11(gameItem.getShearing().y);
+        modelViewMatrix.add(shearingMatrix);
+        
         Matrix4f viewCurr = new Matrix4f(viewMatrix);
         return viewCurr.mul(modelViewMatrix);
     }
