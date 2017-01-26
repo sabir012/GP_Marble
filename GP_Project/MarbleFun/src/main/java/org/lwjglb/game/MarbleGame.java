@@ -94,19 +94,34 @@ public class MarbleGame implements IGameLogic {
 			};
 		
 		balls = new Ball[] {
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -5f, 4.5f,
-						-10),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.2f, new Vector3f(), PhysicalMaterial.STEEL, -7f, 5f,
-						-10),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -3f, 4.5f,
-						-10) };
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -18f, 12f,
+						-20),
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.2f, new Vector3f(), PhysicalMaterial.STEEL, -17f, 11.5f,
+						-20),
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -16f, 12.5f,
+						-20) };
 
-		tracks = new Track[] { new Track(OBJLoader.loadMesh(GameItemType.TRACK), -8, 4, 0, 2, PhysicalMaterial.GRAS),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f, 2, 5f, 1.5f, PhysicalMaterial.WOOD),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6f, -3, 6.5f, 3, PhysicalMaterial.GOLD),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -4f, -1.5f, 7, -1.5f, PhysicalMaterial.STEEL),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f, 2f, -7f, -5f, PhysicalMaterial.PLASTIC),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -7.5f, -3f, 5f, -7f, PhysicalMaterial.PLASTIC), };
+		tracks = new Track[] { new Track(OBJLoader.loadMesh(GameItemType.TRACK), -18, 10, -12, 9f, PhysicalMaterial.WOOD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12f, 9f, -8f, 5f, PhysicalMaterial.WOOD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -9f, 6, -3f, 5, PhysicalMaterial.GOLD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f, 5.5f, 12, 5.5f, PhysicalMaterial.STEEL),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 15f, 12f, 16f, -1f, PhysicalMaterial.PLASTIC),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 8f, 0f, 18f, 3f, PhysicalMaterial.PLASTIC),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -6f, 0f, 4, 0f, PhysicalMaterial.STEEL),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -14f, 3f, -6f, 0f, PhysicalMaterial.WOOD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -14f, 9f, -13f, 0f, PhysicalMaterial.PLASTIC),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6f, -3, 16f, -3, PhysicalMaterial.GOLD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 13f, -6, 17.5f, 2.5f, PhysicalMaterial.WOOD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f, -6, 6f, -3, PhysicalMaterial.GOLD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -10f, -8, 0f, -6, PhysicalMaterial.GOLD),
+				//bucket
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12f, -10f, -10f, -8f, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12.5f, -11f, -12f, -10f, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15f, -11, -12f, -11, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -14.5f, -10, -14f, -11, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15.5f, -8, -14.5f, -10, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -16f, 0, -15.5f, -8, PhysicalMaterial.PLASTIC),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -17f, 0, -11f, 0, PhysicalMaterial.PLASTIC)};
 
 		gameItems = new GameItem[tracks.length + balls.length+grass.length];
 
@@ -183,7 +198,7 @@ public class MarbleGame implements IGameLogic {
 				
 				if(secondsBetween>5){
 					preRunDate = date;
-					Ball ball = new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -5f, 5.5f,-10);
+					Ball ball = new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -18f, 12f,-20);
 			
 					Ball[] newBalls = new Ball[balls.length+1];
 					newBalls[newBalls.length-1] = ball;
@@ -230,7 +245,7 @@ public class MarbleGame implements IGameLogic {
 		}
 		
 		for (int i=0; i<balls.length; i++) {
-			balls[i].updateGravity(interval * 0.05f);
+			balls[i].updateGravity(interval * 0.7f);
 			for (int j=i+1; j<balls.length; j++) {
 				if (balls[i].isCollide(balls[j])) {
 					balls[i].handleBallCollision(balls[j]);

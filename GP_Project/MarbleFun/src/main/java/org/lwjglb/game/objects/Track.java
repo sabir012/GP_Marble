@@ -33,7 +33,7 @@ public class Track extends GameItem {
 		
 		float meshLength = Math.abs(box.getMaxX().x - box.getMinX().x);
 		float trackLength = (float) Math.sqrt(Math.pow(xstart - xend, 2) + Math.pow(ystart - yend, 2));
-		setPosition((end.x + start.x)/2, (end.y + start.y) / 2, -10);
+		setPosition((end.x + start.x)/2, (end.y + start.y) / 2, -20);
 		setRotation(0, 0, -slope);
 		setScale(trackLength / meshLength);
 		Texture tex = new Texture(material.getTexturePath());
@@ -43,8 +43,6 @@ public class Track extends GameItem {
 		
 		mesh.setMaterial(mat);
 
-        
-		this.material = PhysicalMaterial.GRAS;
 	}
 
 	public Track(Mesh mesh, PhysicalMaterial material) {

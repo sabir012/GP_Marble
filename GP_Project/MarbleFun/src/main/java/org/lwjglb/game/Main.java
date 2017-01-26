@@ -10,7 +10,7 @@ public class Main {
         try {
             boolean vSync = true;
             IGameLogic logic = new MarbleGame();
-            GameEngine engine = new GameEngine("GAME", 900, 700, vSync, logic);
+            GameEngine engine = new GameEngine("GAME", 1680, 1050, vSync, logic);
             engine.start();
         } catch (Exception excp) {
             excp.printStackTrace();

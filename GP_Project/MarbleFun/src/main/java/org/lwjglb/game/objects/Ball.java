@@ -149,7 +149,7 @@ public class Ball extends GameItem implements Gravitable{
 	private Vector3f acceleration= new Vector3f();
 	private Vector3f new_acceleration= new Vector3f();
 	private Vector3f avg_acceleration= new Vector3f();
-	private Vector3f force= new Vector3f();
+	//private Vector3f force= new Vector3f();
 	private float coefficientOfDrag = 0.47f;// Coeffecient of drag for a ball
 	private float frontalAreaOfTheBall;
 	private float densityOfAir = 1.2f;// Density of air. Try 1000 for water.
@@ -158,7 +158,7 @@ public class Ball extends GameItem implements Gravitable{
 		Vector3f position = this.getPosition();
 		
 		frontalAreaOfTheBall = (float)Math.PI * radius * radius / 10000;
-		
+		Vector3f force= new Vector3f();
 		force = force.add(new Vector3f(0,(float)(mass * 9.81),0)); 
 		force = force.add(new Vector3f((float)(-1 * 0.5 * densityOfAir * coefficientOfDrag * frontalAreaOfTheBall * velocity.x * velocity.x),
 				(float)(-1 * 0.5 * densityOfAir * coefficientOfDrag * frontalAreaOfTheBall * velocity.y * velocity.y),
