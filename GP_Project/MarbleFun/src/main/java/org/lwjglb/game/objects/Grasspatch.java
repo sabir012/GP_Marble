@@ -76,10 +76,7 @@ public class Grasspatch extends GameItem {
 		for (Grass g : grass) {
 			float dShearing = windstrength * interval * (g.getMaxShearing()/interval/4);
 			float shearing = g.getShearing().x;
-			System.out.println(g.getShearingDirection(shearing));
 			g.setShearing(shearing + dShearing * direction, g.getShearing().y);
-			System.out.println(g.getShearing());
-			System.out.println(g.getMaxShearing());
 		}
 	}
 }

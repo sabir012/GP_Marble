@@ -9,8 +9,6 @@ import org.lwjglb.engine.graph.Box;
 import org.lwjglb.engine.graph.Material;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.Texture;
-import org.lwjglb.engine.sound.SoundManager;
-import org.lwjglb.engine.sound.Sounds;
 
 public class Track extends GameItem {
 
@@ -114,7 +112,6 @@ public class Track extends GameItem {
 					collision = true;
 				}
 			}
-			System.out.println("distance "+distance);
 		} else {
 			collision = false;
 			

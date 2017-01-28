@@ -41,7 +41,7 @@ public class MarbleGame implements IGameLogic {
 	private final Renderer renderer;
 
 	private final Camera camera;
-	
+
 	private final SoundManager soundManager;
 
 	private GameItem[] gameItems;
@@ -49,7 +49,7 @@ public class MarbleGame implements IGameLogic {
 	private Ball[] balls;
 
 	private Grasspatch[] grass;
-	
+
 	private Vector3f ambientLight;
 
 	private PointLight pointLight;
@@ -58,7 +58,9 @@ public class MarbleGame implements IGameLogic {
 
 	private float lightAngle;
 	
-	private boolean updateActive=true;
+	private double clock = 0;
+
+	private boolean updateActive = true;
 	private Date preRunDate = new Date();
 	private static final float CAMERA_POS_STEP = 0.05f;
 
@@ -74,7 +76,7 @@ public class MarbleGame implements IGameLogic {
 	public void init(Window window) throws Exception {
 		renderer.init(window);
 		soundManager.init();
-		
+
 		float reflectance = 1f;
 
 		Mesh mesh = OBJLoader.loadMesh(GameItemType.TRACK);
@@ -89,19 +91,18 @@ public class MarbleGame implements IGameLogic {
 		mesh2.setMaterial(material);
 		trackMesh.setMaterial(material);
 
-		grass = new Grasspatch[] {
-				new Grasspatch(-40f, -20f, -100f, 80f, 80f, 5)
-			};
-		
+		grass = new Grasspatch[] { new Grasspatch(-40f, -20f, -100f, 80f, 80f, 5) };
+
 		balls = new Ball[] {
 				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -18f, 12f,
 						-20),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.2f, new Vector3f(), PhysicalMaterial.STEEL, -17f, 11.5f,
-						-20),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -16f, 12.5f,
-						-20) };
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.4f, new Vector3f(), PhysicalMaterial.GOLD, -17f,
+						11.5f, -20),
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.WOOD, -16f,
+						12.5f, -20) };
 
-		tracks = new Track[] { new Track(OBJLoader.loadMesh(GameItemType.TRACK), -18, 10, -12, 9f, PhysicalMaterial.WOOD),
+		tracks = new Track[] {
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -18, 10, -12, 9f, PhysicalMaterial.WOOD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12f, 9f, -8f, 5f, PhysicalMaterial.WOOD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -9f, 6, -3f, 5, PhysicalMaterial.GOLD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f, 5.5f, 12, 5.5f, PhysicalMaterial.STEEL),
@@ -113,26 +114,23 @@ public class MarbleGame implements IGameLogic {
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6f, -3, 16f, -3, PhysicalMaterial.GOLD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 13f, -6, 17.5f, 2.5f, PhysicalMaterial.WOOD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 0f, -6, 6f, -3, PhysicalMaterial.GOLD),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -10f, -8, 0f, -6, PhysicalMaterial.GOLD),
-				//bucket
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12f, -10f, -10f, -8f, PhysicalMaterial.GRAS),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12.5f, -11f, -12f, -10f, PhysicalMaterial.GRAS),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15f, -11, -12f, -11, PhysicalMaterial.GRAS),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -14.5f, -10, -14f, -11, PhysicalMaterial.GRAS),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15.5f, -8, -14.5f, -10, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -10f, -7.5f, 0f, -6, PhysicalMaterial.GOLD),
+				// bucket
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12.5f, -12f, -9.5f, -7.5f, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15.5f, -8, -14f, -11, PhysicalMaterial.GRAS),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -16f, 0, -15.5f, -8, PhysicalMaterial.PLASTIC),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -17f, 0, -11f, 0, PhysicalMaterial.PLASTIC)};
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -17f, 0, -11f, 0, PhysicalMaterial.PLASTIC) };
 
-		gameItems = new GameItem[tracks.length + balls.length+grass.length];
+		gameItems = new GameItem[tracks.length + balls.length + grass.length];
 
 		for (int i = 0; i < balls.length; i++) {
 			gameItems[i] = balls[i];
 		}
-		for (int i = balls.length; i < balls.length+tracks.length; i++) {
+		for (int i = balls.length; i < balls.length + tracks.length; i++) {
 			gameItems[i] = tracks[i - balls.length];
 		}
-		for (int i = balls.length+tracks.length; i < balls.length+tracks.length+grass.length; i++) {
-			gameItems[i] = grass[i - balls.length-tracks.length];
+		for (int i = balls.length + tracks.length; i < balls.length + tracks.length + grass.length; i++) {
+			gameItems[i] = grass[i - balls.length - tracks.length];
 		}
 
 		ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
@@ -146,30 +144,31 @@ public class MarbleGame implements IGameLogic {
 		lightPosition = new Vector3f(0, 1, 1);
 		lightColour = new Vector3f(1, 1, 1);
 		directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
-		
-		//Sound
-        this.soundManager.init();
-        this.soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
-        setupSounds();
+
+		// Sound
+		this.soundManager.init();
+		this.soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
+		setupSounds();
 	}
 
 	private void setupSounds() throws Exception {
 		SoundBuffer backSound = new SoundBuffer("/sounds/backMusic.ogg");
-        soundManager.addSoundBuffer(backSound);
-        SoundSource sourceBack = new SoundSource(true, true);
-        sourceBack.setBuffer(backSound.getBufferId());
-        soundManager.addSoundSource(Sounds.MUSIC.toString(), sourceBack);
-		
-        SoundBuffer soundCollision = new SoundBuffer("/sounds/collision.ogg");
-        soundManager.addSoundBuffer(soundCollision);
-        SoundSource sourcebuffCollision = new SoundSource(false, true);
-        sourcebuffCollision.setBuffer(soundCollision.getBufferId());
-        soundManager.addSoundSource(Sounds.BEEP.toString(), sourcebuffCollision);
-        
-        soundManager.setListener(new SoundListener(new Vector3f(0, 0, 0)));
+		soundManager.addSoundBuffer(backSound);
+		SoundSource sourceBack = new SoundSource(true, true);
+		sourceBack.setBuffer(backSound.getBufferId());
+		soundManager.addSoundSource(Sounds.MUSIC.toString(), sourceBack);
 
-        sourceBack.play();        
-    }
+		SoundBuffer soundCollision = new SoundBuffer("/sounds/collision.ogg");
+		soundManager.addSoundBuffer(soundCollision);
+		SoundSource sourcebuffCollision = new SoundSource(false, true);
+		sourcebuffCollision.setBuffer(soundCollision.getBufferId());
+		soundManager.addSoundSource(Sounds.BEEP.toString(), sourcebuffCollision);
+
+		soundManager.setListener(new SoundListener(new Vector3f(0, 0, 0)));
+
+		sourceBack.play();
+	}
+
 	@Override
 	public void input(Window window, MouseInput mouseInput) {
 		cameraInc.set(0, 0, 0);
@@ -187,34 +186,33 @@ public class MarbleGame implements IGameLogic {
 			cameraInc.y = -1;
 		} else if (window.isKeyPressed(GLFW_KEY_X)) {
 			cameraInc.y = 1;
-		}
-		else if (window.isKeyPressed(GLFW_KEY_B)) { //Working period 3 seconds
-			try{
+		} else if (window.isKeyPressed(GLFW_KEY_B)) { // Working period 3
+														// seconds
+			try {
 				updateActive = false;
 				Calendar calobj = Calendar.getInstance();
 				Date date = calobj.getTime();
-				
-				long secondsBetween = (date.getTime()-preRunDate.getTime())/1000;
-				
-				if(secondsBetween>5){
+
+				long secondsBetween = (date.getTime() - preRunDate.getTime()) / 1000;
+
+				if (secondsBetween > 5) {
 					preRunDate = date;
-					Ball ball = new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -18f, 12f,-20);
-			
-					Ball[] newBalls = new Ball[balls.length+1];
-					newBalls[newBalls.length-1] = ball;
+					Ball ball = new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(),
+							PhysicalMaterial.STEEL, -18f, 12f, -20);
+
+					Ball[] newBalls = new Ball[balls.length + 1];
+					newBalls[newBalls.length - 1] = ball;
 					System.arraycopy(balls, 0, newBalls, 0, balls.length);
 					balls = newBalls;
-			
-					GameItem[] newGameItems = new GameItem[tracks.length + balls.length+grass.length];
+
+					GameItem[] newGameItems = new GameItem[tracks.length + balls.length + grass.length];
 					System.arraycopy(gameItems, 0, newGameItems, 0, gameItems.length);
-					newGameItems[newGameItems.length-1] = ball;
+					newGameItems[newGameItems.length - 1] = ball;
 					gameItems = newGameItems;
 				}
-			}
-			catch(Exception ex){
+			} catch (Exception ex) {
 				ex.printStackTrace();
-			}
-			finally{
+			} finally {
 				updateActive = true;
 			}
 		}
@@ -228,39 +226,48 @@ public class MarbleGame implements IGameLogic {
 
 	@Override
 	public void update(float interval, MouseInput mouseInput) {
-		if(updateActive){
-		// Update camera position
-		camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP,
-				cameraInc.z * CAMERA_POS_STEP);
-		
-		// Update camera based on mouse
-		if (mouseInput.isRightButtonPressed()) {
-			Vector2f rotVec = mouseInput.getDisplVec();
-			camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-		}
+		clock += interval;
+		if (updateActive) {
+			// Update camera position
+			camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP,
+					cameraInc.z * CAMERA_POS_STEP);
 
-		float windstrength = 0.2f;
-		for (Grasspatch grass: grass) {
-			grass.animate(windstrength, interval);
-		}
-		
-		for (int i=0; i<balls.length; i++) {
-			balls[i].updateGravity(interval * 0.7f);
-			for (int j=i+1; j<balls.length; j++) {
-				if (balls[i].isCollide(balls[j])) {
-					balls[i].handleBallCollision(balls[j]);
-					soundManager.playSoundSource(Sounds.BEEP.toString());
+			// Update camera based on mouse
+			if (mouseInput.isRightButtonPressed()) {
+				Vector2f rotVec = mouseInput.getDisplVec();
+				camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+			}
+
+			float windstrength = 0.2f;
+			for (Grasspatch grass : grass) {
+				grass.animate(windstrength, interval);
+			}
+			
+
+			for (int i = 0; i < balls.length; i++) {
+				balls[i].updateGravity(interval * 0.7f);
+				for (int j = i + 1; j < balls.length; j++) {
+					if (balls[i].isCollide(balls[j])) {
+						balls[i].handleBallCollision(balls[j]);
+						if (clock-balls[i].getLastCollision()>0.1) {
+							soundManager.playSoundSource(Sounds.BEEP.toString());
+						}
+						balls[i].setLastColliosion(clock);
+					}
 				}
 			}
-		}
-		
-		for (Track track : tracks) {
-			for (Ball ball : balls) {
-				if(track.isCollide(ball)){
-					soundManager.playSoundSource(Sounds.BEEP.toString());
+
+			for (Track track : tracks) {
+				for (Ball ball : balls) {
+					if (track.isCollide(ball)) {
+						Vector2f v = new Vector2f(ball.getVelocity().x, ball.getVelocity().y);
+						if (clock-ball.getLastCollision()>0.1) {
+							soundManager.playSoundSource(Sounds.BEEP.toString());
+						}
+						ball.setLastColliosion(clock);
+					}
 				}
 			}
-		}
 		}
 	}
 

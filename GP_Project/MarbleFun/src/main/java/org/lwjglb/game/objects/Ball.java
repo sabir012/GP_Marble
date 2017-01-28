@@ -20,6 +20,7 @@ public class Ball extends GameItem implements Gravitable{
 	private PhysicalMaterial material;
 	private Vector2f deformationNormal;
 	private float deformationAmount;
+	private double lastCollision;
 	
 	
 	public Ball(Mesh mesh) throws Exception {
@@ -80,7 +81,9 @@ public class Ball extends GameItem implements Gravitable{
     		
     	    Vector3f x = ballPosition.sub(currentPosition);
     	    ballPosition = ball.getPosition();
+    	    System.out.println("x_1: "+x);
     	    x = x.normalize();
+    	    System.out.println("x_2: "+x);
     	     
     	    Vector3f v1 = currentVelocity;
     	    Vector3f v1Temp = new Vector3f(v1.x,v1.y,v1.z);
@@ -194,5 +197,13 @@ public class Ball extends GameItem implements Gravitable{
 	
 	public Vector3f getVelocity(){
 		return velocity;
+	}
+	
+	public double getLastCollision() {
+		return lastCollision;
+	}
+	
+	public void setLastColliosion(double clock) {
+		this.lastCollision = clock;
 	}
 }
