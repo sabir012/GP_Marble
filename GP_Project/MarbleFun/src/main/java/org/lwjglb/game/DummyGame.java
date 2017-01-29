@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.lwjglb.engine.GameItem;
@@ -19,7 +20,9 @@ import org.lwjglb.engine.graph.Texture;
 import org.lwjglb.game.objects.Ball;
 import org.lwjglb.game.objects.PhysicalMaterial;
 import org.lwjglb.game.objects.Track;
+import org.lwjglb.game.objects.Wall;
 import org.lwjglb.game.objects.Bowl;
+import org.lwjglb.game.objects.Cloth;
 import org.lwjglb.engine.graph.PointLight;
 import org.lwjglb.engine.graph.DirectionalLight;
 
@@ -44,6 +47,10 @@ public class DummyGame implements IGameLogic {
 
     private float lightAngle;
 
+    private Cloth cloth1;
+    
+    
+    
     private static final float CAMERA_POS_STEP = 0.05f;
 
     public DummyGame() {
@@ -51,14 +58,48 @@ public class DummyGame implements IGameLogic {
         camera = new Camera();
         cameraInc = new Vector3f(0, 0, 0);
         lightAngle = 10;
+        cloth1=new Cloth(14,10,55,45);
     }
 
     @Override
     public void init(Window window) throws Exception {
         renderer.init(window);
         
-        float reflectance = 1f;
+        float[]	positions	=	new	float[]{
+				-0.5f,		0.5f,	-1f,
+				-0.5f,	-0.5f,	-1f,
+					0.5f,	-0.5f,	-1f,
+					0.5f,		0.5f,	-1f,
+        };
+        int[]	indices	=	new	int[]{
+				0,	1,	3,	3,	1,	2,
+        };
+        Mesh meshSquare = new Mesh(positions, indices);
         
+        
+        cloth1.drawShaded();
+        float reflectance = 1f;
+        ArrayList<Float> pos = cloth1.getVertices();
+        ArrayList<Float> nor = cloth1.getNormals();
+        ArrayList<Integer> ind = cloth1.getIndices();
+        int length = pos.size();
+        float[] resultPos = new float[length];
+        for (int i = 0; i < length; i++) {
+          resultPos[i] = pos.get(i).floatValue();
+          System.out.println("  fuck     " + resultPos[i]);
+        }
+        
+        length = nor.size();
+        float[] resultNor = new float[length];
+        for (int i = 0; i < length; i++) {
+          resultNor[i] = nor.get(i).floatValue();
+        }
+        length = ind.size();
+        int[] resultInd = new int[length];
+        for (int i = 0; i < length; i++) {
+          resultInd[i] = ind.get(i).intValue();
+        }
+        Mesh meshCloth = new Mesh(resultPos, resultNor, resultInd);
         Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
         Mesh mesh3 = OBJLoader.loadMesh(GameItemType.BALL);
         Mesh trackMesh = OBJLoader.loadMesh(GameItemType.TRACK);
@@ -74,7 +115,10 @@ public class DummyGame implements IGameLogic {
         mesh2.setMaterial(matBowl);
         trackMesh.setMaterial(material);
         mesh3.setMaterial(material);
+        Material matCloth = new Material(new Vector3f(1.0f,0.0f,0.0f), reflectance);
         
+        meshSquare.setMaterial(matCloth);
+        meshCloth.setMaterial(matCloth);
         Ball gameItem = new Ball(mesh);
         gameItem.setPosition(-3f, 4f, -1);
         gameItem.setScale(0.6f);
@@ -83,14 +127,18 @@ public class DummyGame implements IGameLogic {
         gameItem1.setPosition(5f, 0f, -1);
         gameItem1.setScale(0.2f);
         
+        GameItem squareItem= new GameItem(meshSquare);
+        squareItem.setPosition(-5f,0f,-1f);
+        squareItem.setScale(0.1f);
         Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);
         
         Bowl bowlItem = new Bowl(mesh2,PhysicalMaterial.GOLD);
         bowlItem.setPosition(5f, -3f, -1);
-        bowlItem.setScale(1f);
-       
+        bowlItem.setScale(0.5f);
         
-        gameItems = new GameItem[]{bowlItem, gameItem,gameItem1,trackItem};
+        
+        
+        gameItems = new GameItem[]{bowlItem,gameItem,gameItem1,trackItem};
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);

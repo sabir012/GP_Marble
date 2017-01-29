@@ -61,7 +61,7 @@ public class Ball extends GameItem implements Gravitable{
     	} 
     }
 
-	@Override
+
 	public boolean isCollide(Ball ball) {
   	  // we are using multiplications because it's faster than calling Math.pow
 	  Vector3f ballPosition = ball.getPosition();

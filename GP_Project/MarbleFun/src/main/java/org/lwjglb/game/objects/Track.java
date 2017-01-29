@@ -68,7 +68,7 @@ public class Track extends GameItem {
 		return this.material;
 	}
 
-	@Override
+	
 	public boolean isCollide(Ball ball) {
 		Vector2f ballPos = new Vector2f(ball.getPosition().x, ball.getPosition().y);
 		float normalLength = (float) Math.sqrt((end.x-start.x)*(end.x-start.x)+(end.y-start.y)*(end.y-start.y));
