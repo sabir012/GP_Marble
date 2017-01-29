@@ -28,6 +28,8 @@ import org.lwjglb.engine.sound.SoundSource;
 import org.lwjglb.engine.sound.Sounds;
 import org.lwjglb.game.objects.Ball;
 import org.lwjglb.game.objects.Grasspatch;
+import org.lwjglb.game.objects.NumberCube;
+import org.lwjglb.game.objects.NumbersTex;
 import org.lwjglb.game.objects.PhysicalMaterial;
 import org.lwjglb.game.objects.Track;
 import org.lwjglb.engine.graph.PointLight;
@@ -47,6 +49,7 @@ public class MarbleGame implements IGameLogic {
 	private GameItem[] gameItems;
 	private Track[] tracks;
 	private Ball[] balls;
+	private NumberCube[] numberCubes;
 
 	private Grasspatch[] grass;
 
@@ -59,6 +62,8 @@ public class MarbleGame implements IGameLogic {
 	private float lightAngle;
 	
 	private double clock = 0;
+	
+	private int score = 0;
 
 	private boolean updateActive = true;
 	private Date preRunDate = new Date();
@@ -120,8 +125,13 @@ public class MarbleGame implements IGameLogic {
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15.5f, -8, -14f, -11, PhysicalMaterial.GRAS),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -16f, 0, -15.5f, -8, PhysicalMaterial.PLASTIC),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -17f, 0, -11f, 0, PhysicalMaterial.PLASTIC) };
+		
+		numberCubes = new NumberCube[] {
+				new NumberCube(10, -8, -19, NumbersTex.ZERO, NumbersTex.ZERO),
+				new NumberCube(12, -8, -19, NumbersTex.ZERO, NumbersTex.ZERO)
+		};
 
-		gameItems = new GameItem[tracks.length + balls.length + grass.length];
+		gameItems = new GameItem[tracks.length + balls.length + grass.length + numberCubes.length];
 
 		for (int i = 0; i < balls.length; i++) {
 			gameItems[i] = balls[i];
@@ -131,6 +141,9 @@ public class MarbleGame implements IGameLogic {
 		}
 		for (int i = balls.length + tracks.length; i < balls.length + tracks.length + grass.length; i++) {
 			gameItems[i] = grass[i - balls.length - tracks.length];
+		}
+		for (int i = balls.length + tracks.length + grass.length; i < balls.length + tracks.length + grass.length + numberCubes.length; i++) {
+			gameItems[i] = numberCubes[i - balls.length - tracks.length - grass.length];
 		}
 
 		ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
@@ -205,7 +218,7 @@ public class MarbleGame implements IGameLogic {
 					System.arraycopy(balls, 0, newBalls, 0, balls.length);
 					balls = newBalls;
 
-					GameItem[] newGameItems = new GameItem[tracks.length + balls.length + grass.length];
+					GameItem[] newGameItems = new GameItem[gameItems.length+1];
 					System.arraycopy(gameItems, 0, newGameItems, 0, gameItems.length);
 					newGameItems[newGameItems.length - 1] = ball;
 					gameItems = newGameItems;
@@ -252,6 +265,7 @@ public class MarbleGame implements IGameLogic {
 						if (clock-balls[i].getLastCollision()>0.1) {
 							soundManager.playSoundSource(Sounds.BEEP.toString());
 						}
+						setScore(score+=1);
 						balls[i].setLastColliosion(clock);
 					}
 				}
@@ -282,5 +296,14 @@ public class MarbleGame implements IGameLogic {
 		for (GameItem gameItem : gameItems) {
 			gameItem.getMesh().cleanUp();
 		}
+	}
+	
+	private void setScore(int score) {
+		NumbersTex[] nts = NumbersTex.values();
+		for (int i = 0; i < numberCubes.length; i++) {
+			numberCubes[i].getMesh().cleanUp();
+		}
+		numberCubes[0] = new NumberCube(10, -8, -19, nts[score/10], numberCubes[0].getCurrentTex());
+		numberCubes[1] = new NumberCube(10, -8, -19, nts[score%10], numberCubes[1].getCurrentTex());
 	}
 }
