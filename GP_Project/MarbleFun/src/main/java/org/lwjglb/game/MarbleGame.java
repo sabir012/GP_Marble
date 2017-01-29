@@ -299,6 +299,7 @@ public class MarbleGame implements IGameLogic {
 	}
 	
 	private void setScore(int score) {
+		score %=100;
 		NumbersTex[] nts = NumbersTex.values();
 		for (int i = 0; i < numberCubes.length; i++) {
 			numberCubes[i].getMesh().cleanUp();
