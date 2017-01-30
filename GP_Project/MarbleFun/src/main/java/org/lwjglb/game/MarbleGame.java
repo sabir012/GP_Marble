@@ -7,8 +7,10 @@ import org.lwjgl.openal.AL11;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.lwjglb.engine.GameItem;
@@ -69,6 +71,8 @@ public class MarbleGame implements IGameLogic {
 	private Date preRunDate = new Date();
 	private static final float CAMERA_POS_STEP = 0.05f;
 
+	private List<Integer> scoredBalls = new ArrayList<>();
+	
 	public MarbleGame() {
 		renderer = new Renderer();
 		camera = new Camera();
@@ -124,7 +128,7 @@ public class MarbleGame implements IGameLogic {
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12.5f, -12f, -9.5f, -7.5f, PhysicalMaterial.GRAS),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15.5f, -8, -14f, -11, PhysicalMaterial.GRAS),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -16f, 0, -15.5f, -8, PhysicalMaterial.PLASTIC),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -17f, 0, -11f, 0, PhysicalMaterial.PLASTIC) };
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -17f, 0, -11f, 0, PhysicalMaterial.PLASTIC)};
 		
 		numberCubes = new NumberCube[] {
 				new NumberCube(10, -8, -19, NumbersTex.ZERO, NumbersTex.ZERO),
@@ -265,8 +269,15 @@ public class MarbleGame implements IGameLogic {
 						if (clock-balls[i].getLastCollision()>0.1) {
 							soundManager.playSoundSource(Sounds.BEEP.toString());
 						}
-						setScore(score+=1);
 						balls[i].setLastColliosion(clock);
+					}
+				}
+				
+				Vector3f position = balls[i].getPosition();
+				if(position.x>=-14 && position.x<=-12.5 && position.y<-11){
+					if(!this.scoredBalls.contains(i)){
+						setScore(score+=1);
+						scoredBalls.add(i);
 					}
 				}
 			}
