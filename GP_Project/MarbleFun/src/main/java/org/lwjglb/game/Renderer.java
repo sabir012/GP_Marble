@@ -114,7 +114,7 @@ public class Renderer {
             	
             }
             else
-            	mesh.renderTrans();
+            	mesh.renderPositions();
         }
 
         shaderProgram.unbind();

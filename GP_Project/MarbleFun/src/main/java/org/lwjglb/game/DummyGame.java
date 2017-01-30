@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.lwjglb.engine.GameItem;
@@ -77,29 +78,11 @@ public class DummyGame implements IGameLogic {
         Mesh meshSquare = new Mesh(positions, indices);
         
         
-        cloth1.drawShaded();
+        //cloth1.drawShaded();
         float reflectance = 1f;
-        ArrayList<Float> pos = cloth1.getVertices();
-        ArrayList<Float> nor = cloth1.getNormals();
-        ArrayList<Integer> ind = cloth1.getIndices();
-        int length = pos.size();
-        float[] resultPos = new float[length];
-        for (int i = 0; i < length; i++) {
-          resultPos[i] = pos.get(i).floatValue();
-          System.out.println("  fuck     " + resultPos[i]);
-        }
+        List<Vector3f> posVertices = cloth1.getPosVertices();
+              
         
-        length = nor.size();
-        float[] resultNor = new float[length];
-        for (int i = 0; i < length; i++) {
-          resultNor[i] = nor.get(i).floatValue();
-        }
-        length = ind.size();
-        int[] resultInd = new int[length];
-        for (int i = 0; i < length; i++) {
-          resultInd[i] = ind.get(i).intValue();
-        }
-        Mesh meshCloth = new Mesh(resultPos, resultNor, resultInd);
         Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
         Mesh mesh3 = OBJLoader.loadMesh(GameItemType.BALL);
         Mesh trackMesh = OBJLoader.loadMesh(GameItemType.TRACK);
@@ -118,7 +101,7 @@ public class DummyGame implements IGameLogic {
         Material matCloth = new Material(new Vector3f(1.0f,0.0f,0.0f), reflectance);
         
         meshSquare.setMaterial(matCloth);
-        meshCloth.setMaterial(matCloth);
+        //meshCloth.setMaterial(matCloth);
         Ball gameItem = new Ball(mesh);
         gameItem.setPosition(-3f, 4f, -1);
         gameItem.setScale(0.6f);
@@ -127,9 +110,11 @@ public class DummyGame implements IGameLogic {
         gameItem1.setPosition(5f, 0f, -1);
         gameItem1.setScale(0.2f);
         
-        GameItem squareItem= new GameItem(meshSquare);
-        squareItem.setPosition(-5f,0f,-1f);
-        squareItem.setScale(0.1f);
+        
+//       // GameItem squareItem= new GameItem(meshCloth);
+//        squareItem.setPosition(-5f,0f,-1f);
+//        squareItem.setScale(0.1f);
+//        squareItem.setTrans(true);
         Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);
         
         Bowl bowlItem = new Bowl(mesh2,PhysicalMaterial.GOLD);
@@ -138,7 +123,7 @@ public class DummyGame implements IGameLogic {
         
         
         
-        gameItems = new GameItem[]{bowlItem,gameItem,gameItem1,trackItem};
+        gameItems = new GameItem[]{bowlItem, bowlItem,gameItem,gameItem1,trackItem};
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
@@ -190,9 +175,9 @@ public class DummyGame implements IGameLogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
         
-          Ball ball1 = (Ball)gameItems[1];
-          Track track = (Track)gameItems[3];
-          Ball ball2 = (Ball)gameItems[2];
+          Ball ball1 = (Ball)gameItems[2];
+          Track track = (Track)gameItems[4];
+          Ball ball2 = (Ball)gameItems[3];
            
           ball1.updateGravity(interval*0.01f);
           ball2.updateGravity(interval*0.02f);

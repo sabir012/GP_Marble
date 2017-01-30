@@ -55,7 +55,7 @@ public class OBJLoader {
         return reorderLists(vertices, textures, normals, faces, gameItemType);
     }
 
-    private static Mesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
+    public static Mesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
             List<Vector3f> normList, List<Face> facesList, GameItemType gameItemType) {
 
         List<Integer> indices = new ArrayList();
@@ -83,7 +83,35 @@ public class OBJLoader {
         Mesh mesh = new Mesh(posArr, textCoordArr, normArr, indicesArr, gameItemType);
         return mesh;
     }
+    public static Mesh reorderLists(List<Vector3f> posList,
+            List<Vector3f> normList, List<Integer> indices) {
 
+        
+        // Create position array in the order it has been declared
+        float[] posArr = new float[posList.size() * 3];
+        int i = 0;
+        for (Vector3f pos : posList) {
+            posArr[i * 3] = pos.x;
+            posArr[i * 3 + 1] = pos.y;
+            posArr[i * 3 + 2] = pos.z;
+            i++;
+        }
+        
+        float[] normArr = new float[posList.size() * 3];
+        i = 0;
+        for (Vector3f norm : normList) {
+            normArr[i * 3] = norm.x;
+            normArr[i * 3 + 1] = norm.y;
+            normArr[i * 3 + 2] = norm.z;
+            i++;
+        }
+        
+        int[] indicesArr = new int[indices.size()];
+        indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
+        Mesh mesh = new Mesh(posArr, normArr, indicesArr);
+        return mesh;
+    }
+    
     private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList,
             List<Vector3f> normList, List<Integer> indicesList,
             float[] texCoordArr, float[] normArr) {
@@ -106,6 +134,7 @@ public class OBJLoader {
             normArr[posIndex * 3 + 2] = vecNorm.z;
         }
     }
+    
 
     protected static class Face {
 
