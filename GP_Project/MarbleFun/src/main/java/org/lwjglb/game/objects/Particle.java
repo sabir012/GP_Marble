@@ -1,4 +1,4 @@
-package org.lwjglb.game.objects;
+	package org.lwjglb.game.objects;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -21,34 +21,28 @@ public class Particle{
 	
 	private Vector3f position;
 	private Vector3f oldPosition;
-	private Vector3f velocity;
 	private Vector3f acceleration;
 	private Vector3f accumulatedNormal;
 	private boolean movable;
 	private float mass;
-	public Particle nextP;
-	private int vaoId;
-	private int vboId;
-	private Timer time;
 	private float damp;
 	private float elapsedTime;
-	
-	public Particle(){}
 	
 	public Particle(Vector3f pos){
 		this.position = pos;
 		this.oldPosition = pos;
-		this.acceleration=new Vector3f(0,0,0);
+		this.acceleration=new Vector3f(0.0f,0.0f,0.0f);
 		this.mass=1.0f;
-		time = new Timer();
-		elapsedTime=time.getElapsedTime();
+		this.movable = true;
+		this.accumulatedNormal = new Vector3f(0.0f,0.0f,0.0f);
+		elapsedTime = 0.25f;
 		damp = 0.01f;
 	}
 		
 	
 	
 	public void addForce(Vector3f f){
-		acceleration = acceleration.add(f.div(mass));
+		this.acceleration.add(f.div(mass));
 	}
 	
 	public void timeStamp(){
@@ -58,10 +52,11 @@ public class Particle{
 			Vector3f temp1 = position;
 			position = (position.sub(oldPosition));
 			Vector3f newPos = position.mul(damping);
-			Vector3f newAcc = acceleration.mul(elapsedTime);
+			Vector3f newAcc = acceleration;
+			newAcc.mul(elapsedTime);
 			position = temp1.add(newPos.add(newAcc));
 			oldPosition = temp;
-			acceleration = new Vector3f(0,0,0);
+			acceleration = new Vector3f(0.0f,0.0f,0.0f);
 		}
 	}
 	
@@ -71,11 +66,7 @@ public class Particle{
 		}
 	}
 	
-	public void addNormal(Vector3f norm){
-		if(isMovable()){
-			accumulatedNormal.add(norm);
-		}
-	}
+	
 	
 	public Vector3f getAccumulatedNormal() {
 		return accumulatedNormal;
@@ -113,44 +104,13 @@ public class Particle{
 		return position;
 	}
 
-	public int getVaoId() {
-        return vaoId;
-    }
-	
-
-
-	public Vector3f getPosition2f() {
-		return position;
-	}
+		
 
 	public void setPosition(Vector3f pos) {
 		this.position = pos;
 	}
 	
-	public void setPositionX(float x){
-		this.velocity.x = x;
-	}
 	
-	public void setPositionY(float y){
-		this.velocity.y = y;
-	}
-
-	public Vector3f getVelocity() {
-		return velocity;
-	}
-
-	public void setVelocity(Vector3f velocity) {
-		this.velocity = velocity;
-	}
-	
-	public void setVelocityX(float x){
-		this.velocity.x = x;
-	}
-	
-	public void setVelocityY(float y){
-		this.velocity.y = y;
-	}
-
 	public Vector3f getAcceleration() {
 		return acceleration;
 	}
@@ -159,28 +119,14 @@ public class Particle{
 		this.acceleration = acceleration;
 	}
 
-	
-	
-/*	public float getSurf_norm() {
-		return surf_norm;
+	public void addAccumulatedNormal(Vector3f normal) {
+		// TODO Auto-generated method stub
+		if(isMovable()){
+			accumulatedNormal.add(normal);
+		}
+		
 	}
 
-	public void setSurf_norm(float surf_norm) {
-		this.surf_norm = surf_norm;
-	}
-*/
-	public Particle getNextP() {
-		return nextP;
-	}
-
-	public void setNextP(Particle nextP) {
-		this.nextP = nextP;
-	}
-/*
-	public int getId() {
-		return id;
-	}*/
-	
-	
+		
 
 }

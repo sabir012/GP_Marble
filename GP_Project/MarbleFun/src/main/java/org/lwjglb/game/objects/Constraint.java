@@ -10,16 +10,19 @@ public class Constraint {
 	Constraint(Particle Par1, Particle Par2){
 		this.P1 = Par1;
 		this.P2 = Par2;
-		Vector3f temp = new Vector3f(0,0,0);
-		temp = P1.getPosition().sub(P2.getPosition());
+		Vector3f temp = P1.getPosition();
+		temp.sub(P2.getPosition());
 		restDist = temp.length();
 	}
 	public void satisfyConstraint(){
-		Vector3f distP1_P2 = P2.getPosition().sub(P1.getPosition());
+		Vector3f tempPosP1 = P1.getPosition();
+		Vector3f tempPosP2 = P2.getPosition();
+		Vector3f distP1_P2 = tempPosP2.sub(tempPosP1);
 		float currentDist =distP1_P2.length();
 		float factor= 1 - restDist/currentDist;
-		Vector3f correction = distP1_P2.mul(factor);
-		Vector3f correctionHalf =new Vector3f(0,0,0);
+		Vector3f tempCor = distP1_P2;
+		Vector3f correction = tempCor.mul(factor);
+		Vector3f correctionHalf =new Vector3f(0.0f,0.0f,0.0f);
 		correctionHalf.half(correction);
 		P1.offsetPos(correctionHalf);
 		P2.offsetPos(correctionHalf.negate());

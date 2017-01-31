@@ -4,7 +4,10 @@ import static org.lwjgl.opengl.GL11.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 import java.util.Vector;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -19,9 +22,13 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjglb.engine.GameItem;
 import org.lwjglb.engine.graph.Mesh;
+import org.lwjglb.engine.graph.OBJLoader;
 
 public class Cloth{
+
+	private static final int CONSTRAINT_ITERATIONS = 15;
 	private int width;
+	
 	private int height;
 	private float scale;
 	private Particle particle;
@@ -30,26 +37,23 @@ public class Cloth{
 	private boolean trans = false;
 	private ArrayList<Particle> particles = new ArrayList<Particle>();
 	private ArrayList<Constraint> constraints;
-	private ArrayList<Float> vertices = new ArrayList<Float>();
+	
 	private List<Vector3f> posVertices = new ArrayList<>();
-	private ArrayList<Float> normals = new ArrayList<Float>();
-	private ArrayList<Integer> indices = new ArrayList<Integer>();
+	private List<Vector3f> posNormals = new ArrayList<>();
+	private List<Integer> posIndices = new ArrayList<>();
 	private HashMap<Integer,Integer> check = new HashMap<Integer, Integer>();
 	Ball ball;
-	private int vaoId;
-	private int vboId;
-	private int colourVboId;
 	private int value;
 	
 	public Cloth(float widthParticle, float heightParticle, int numParticlesWidth, int numParticlesHeight){
-		rotation = new Vector3f(0);
+		rotation = new Vector3f(0.0f,0.0f,0.0f);
 		value = 0;
 		constraints = new ArrayList<Constraint>();
 		this.width=numParticlesWidth;
 		this.height =numParticlesHeight;
 		//System.out.println(width*height + "width height" + height);
 		particles.ensureCapacity(width*height);
-		ArrayList<Float> initVertices = new ArrayList<Float>(width*height);
+		
 		for(int i=0;i<width*height;i++)
 			particles.add(null);
 		for(int x=0; x<width; x++)
@@ -58,9 +62,8 @@ public class Cloth{
 			{
 				Vector3f pos = new Vector3f(widthParticle * (x/(float)width),
 								-heightParticle * (y/(float)height),
-								0);
+								-10);
 				particle = new Particle(pos);
-				posVertices.add(particle.getPosition());
 				particles.set((y*width + x),particle);
 			}
 		}
@@ -95,7 +98,7 @@ public class Cloth{
 		for(int i=0;i<3; i++)
 		{
 			particle = getParticle(0+i ,0);
-			Vector3f temp = new Vector3f();
+			Vector3f temp = new Vector3f(0.0f,0.0f,0.0f);
 			particle.offsetPos(temp.set(0.5f,0.0f,0.0f)); 
 			particle.setMovable(false);
 			particle.offsetPos(temp.set(-0.5f,0.0f,0.0f));
@@ -105,13 +108,29 @@ public class Cloth{
 	}
 	
 	public List<Vector3f> getPosVertices() {
+		
+		System.out.println(posVertices.size());
 		return posVertices;
 	}
+	public List<Vector3f> getPosNormals() {
+	
+		System.out.println(posNormals.size());
+		return posNormals;
+	}
+	
 
-	public void setPosVertices(ArrayList<Vector3f> posVertices) {
-		this.posVertices = posVertices;
+	
+	public List<Integer> getPosIndices() {
+		
+		System.out.println(posIndices.size() + "Indicessize");
+		return posIndices;
 	}
 
+	public void setPosIndices(List<Integer> posIndices) {
+		this.posIndices = posIndices;
+	}
+
+	
 	public float getScale() {
         return scale;
     }
@@ -135,38 +154,14 @@ public class Cloth{
 	}
 	
 	
-	public ArrayList<Float> getVertices() {
-		return vertices;
-	}
-
-	public void setVertices(ArrayList<Float> vertices) {
-		this.vertices = vertices;
-	}
-
-	public ArrayList<Float> getNormals() {
-		return normals;
-	}
-
-	public void setNormals(ArrayList<Float> normals) {
-		this.normals = normals;
-	}
-
-	public ArrayList<Integer> getIndices() {
-		return indices;
-	}
-
-	public void setIndices(ArrayList<Integer> indices) {
-		this.indices = indices;
-	}
-
 	public Particle getDrawParticle(int x, int y){
 		int ind = width*y+x;
 		particle = particles.get(ind);
 		
 		if(check.containsKey(ind))
-			indices.add(check.get(ind));
+			posIndices.add(check.get(ind));
 		else{
-			indices.add(value);
+			posIndices.add(value);
 			check.put(ind, value++ );
 		}
 		return particle;
@@ -187,7 +182,8 @@ public class Cloth{
 	public void addWindForcesForTriangle(Particle P1,Particle P2,Particle P3,Vector3f direction)
 	{
 		Vector3f normal = calcTriangleNormal(P1,P2,P3);
-		Vector3f d = normal.normalize();
+		Vector3f tempd = normal;
+		Vector3f d = tempd.normalize();
 		Vector3f force = normal.mul(d.dot(direction));
 		P1.addForce(force);
 		P2.addForce(force);
@@ -198,29 +194,59 @@ public class Cloth{
 		Vector3f pos1 = P1.getPosition();
 		Vector3f pos2 = P2.getPosition();
 		Vector3f pos3 = P3.getPosition();
-		Float[]	vert	=	new	Float[]{
-				pos1.x,	pos1.y,	pos1.z,
-			pos2.x,	pos2.y,	pos2.z,
-			pos3.x,pos3.y,pos3.z
-		};
-		//System.out.println("vertices   "+vert);
-		for(int i=0;i<vert.length;i++){
-			vertices.add(vert[i]);
-			
+		Vector3f tempNorm1 = P1.getAccumulatedNormal();
+		Vector3f tempNorm2 = P2.getAccumulatedNormal();
+		Vector3f tempNorm3 = P3.getAccumulatedNormal();
+		Vector3f norm1 = tempNorm1.normalize();
+		Vector3f norm2 = tempNorm2.normalize();
+		Vector3f norm3 = tempNorm3.normalize();
+		if(posVertices.isEmpty()){
+			posVertices.add(pos1);
+			posVertices.add(pos2);
+			posVertices.add(pos3);
+			posNormals.add(norm1);
+			posNormals.add(norm2);
+			posNormals.add(norm3);
 		}
-		System.out.println(pos1 + " " + pos2 + " " + pos3);
-			
-		Vector3f norm1 = P1.getAccumulatedNormal().normalize();
-		Vector3f norm2 = P2.getAccumulatedNormal().normalize();
-		Vector3f norm3 = P3.getAccumulatedNormal().normalize();
-		Float[]	norm	=	new	Float[]{
-				norm1.x, norm1.y,	norm1.z,
-			norm2.x,	norm2.y,	norm2.z,
-			norm3.x,norm3.y,norm3.z
-		};
-		for(int i=0;i<norm.length;i++)
-			normals.add(norm[i]);
-	
+		else{
+			if(!(posVertices.contains(pos1))){
+				posNormals.add(norm1);
+				posVertices.add(pos1);
+			}
+			if(!(posVertices.contains(pos2))){
+				posVertices.add(pos2);
+				posNormals.add(norm2);
+			}
+			if(!(posVertices.contains(pos3))){
+				posVertices.add(pos3);
+				posNormals.add(norm3);
+			}
+		}
+		
+//			ListIterator<Vector3f> itr = posVertices.listIterator();
+//			boolean flag1 = true;
+//			boolean flag2 = true;
+//			boolean flag3 = true;
+//			while(itr.hasNext())
+//			{
+//				Vector3f temp = itr.next();
+//				if(temp.equals(pos1))
+//					flag1=false;
+//				if(temp.equals(pos2))
+//					flag2=false;
+//				if(!(temp.equals(pos3)))
+//					flag3=false;
+//			}
+//			if(flag1)
+//				itr.add(pos1);
+//			if(flag2)
+//				itr.add(pos2);
+//			if(flag3)
+//				itr.add(pos3);
+//		
+//		}
+		
+						
 	}
 	public void drawShaded()
 	{
@@ -228,7 +254,7 @@ public class Cloth{
 		for(Iterator<Particle> itr = particles.iterator();itr.hasNext();)
 		{
 			particle = itr.next();
-			particle.setAccumulatedNormal(new Vector3f(0));
+			particle.setAccumulatedNormal(new Vector3f(0.0f,0.0f,0.0f));
 			
 		}
 		
@@ -239,18 +265,18 @@ public class Cloth{
 			for(int y=0; y<height-1; y++)
 			{
 				Vector3f normal = calcTriangleNormal(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1));
-				getParticle(x+1,y).addNormal(normal);
-				getParticle(x,y).addNormal(normal);
-				getParticle(x,y+1).addNormal(normal);
+				getParticle(x+1,y).addAccumulatedNormal(normal);
+				getParticle(x,y).addAccumulatedNormal(normal);
+				getParticle(x,y+1).addAccumulatedNormal(normal);
 
 				normal = calcTriangleNormal(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1));
-				getParticle(x+1,y+1).addNormal(normal);
-				getParticle(x+1,y).addNormal(normal);
-				getParticle(x,y+1).addNormal(normal);
+				getParticle(x+1,y+1).addAccumulatedNormal(normal);
+				getParticle(x+1,y).addAccumulatedNormal(normal);
+				getParticle(x,y+1).addAccumulatedNormal(normal);
 			}
 		}
 
-		//GL11.glBegin(GL_TRIANGLES);
+		
 		for(int x = 0; x<width-1; x++)
 		{
 			for(int y=0; y<height-1; y++)
@@ -261,15 +287,17 @@ public class Cloth{
 				drawTriangle(getDrawParticle(x+1,y+1),getDrawParticle(x+1,y),getDrawParticle(x,y+1));
 			}
 		}
-		//GL11.glEnd();
+	
 	}
 	public void timeStamp()
 	{
-		for(Iterator<Constraint> itr = constraints.iterator();itr.hasNext();) // iterate over all constraints several times
+		for(int i=0;i<CONSTRAINT_ITERATIONS;i++)
 		{
-			cons = itr.next();
-			cons.satisfyConstraint(); // satisfy constraint.
-			
+			for(Iterator<Constraint> itr = constraints.iterator();itr.hasNext();) // iterate over all constraints several times
+			{
+				cons = itr.next();
+				cons.satisfyConstraint(); // satisfy constraint.
+			}
 		}
 		for(Iterator<Particle> itr = particles.iterator();itr.hasNext();)
 		{
@@ -305,7 +333,7 @@ public class Cloth{
 		for(Iterator<Particle> itr = particles.iterator();itr.hasNext();)
 		{
 			particle = itr.next();
-			Vector3f temp = new Vector3f(0);
+			Vector3f temp = new Vector3f(0.0f,0.0f,0.0f);
 			particle.getPosition().sub(center, temp);
 			float l = temp.length();
 			if(l<radius){

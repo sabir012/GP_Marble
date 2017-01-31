@@ -12,6 +12,7 @@ import org.lwjglb.engine.GameItem;
 import org.lwjglb.engine.GameItemType;
 import org.lwjglb.engine.IGameLogic;
 import org.lwjglb.engine.MouseInput;
+import org.lwjglb.engine.Timer;
 import org.lwjglb.engine.Window;
 import org.lwjglb.engine.graph.Camera;
 import org.lwjglb.engine.graph.Material;
@@ -50,16 +51,26 @@ public class DummyGame implements IGameLogic {
 
     private Cloth cloth1;
     
+    private float ballTime;
     
+  
+    
+    float timeElapsed;
+    
+    Vector3f grav = new Vector3f(0.0f,-0.2f,0.0f);
+    Vector3f wind = new Vector3f(0.5f,0.0f,0.2f);
     
     private static final float CAMERA_POS_STEP = 0.05f;
 
     public DummyGame() {
         renderer = new Renderer();
         camera = new Camera();
-        cameraInc = new Vector3f(0, 0, 0);
+        cameraInc = new Vector3f(0, 0, 1);
         lightAngle = 10;
-        cloth1=new Cloth(14,10,55,45);
+        cloth1=new Cloth(3,2,6,6);
+     
+        timeElapsed = 0.25f;
+        ballTime=0;
     }
 
     @Override
@@ -75,12 +86,9 @@ public class DummyGame implements IGameLogic {
         int[]	indices	=	new	int[]{
 				0,	1,	3,	3,	1,	2,
         };
-        Mesh meshSquare = new Mesh(positions, indices);
         
+         float reflectance = 1f;
         
-        //cloth1.drawShaded();
-        float reflectance = 1f;
-        List<Vector3f> posVertices = cloth1.getPosVertices();
               
         
         Mesh mesh = OBJLoader.loadMesh(GameItemType.BALL);
@@ -100,7 +108,7 @@ public class DummyGame implements IGameLogic {
         mesh3.setMaterial(material);
         Material matCloth = new Material(new Vector3f(1.0f,0.0f,0.0f), reflectance);
         
-        meshSquare.setMaterial(matCloth);
+        
         //meshCloth.setMaterial(matCloth);
         Ball gameItem = new Ball(mesh);
         gameItem.setPosition(-3f, 4f, -1);
@@ -109,21 +117,47 @@ public class DummyGame implements IGameLogic {
         Ball gameItem1 = new Ball(mesh3);
         gameItem1.setPosition(5f, 0f, -1);
         gameItem1.setScale(0.2f);
-        
-        
-//       // GameItem squareItem= new GameItem(meshCloth);
-//        squareItem.setPosition(-5f,0f,-1f);
-//        squareItem.setScale(0.1f);
-//        squareItem.setTrans(true);
+//        
+//        ballTime++;
+//        cloth1.addForce(grav.mul(timeElapsed)); 
+//        cloth1.windForce(wind.mul(timeElapsed)); 
+//        cloth1.timeStamp();
+    	//cloth1.ballCollision(gameItem1);
+    	
+        //trying to draw the cloth particle
+        cloth1.drawShaded();
+        Mesh meshCloth = OBJLoader.reorderLists(cloth1.getPosVertices(),cloth1.getPosNormals(),cloth1.getPosIndices());
+        meshCloth.setMaterial(matCloth);
+        GameItem clothItem= new GameItem(meshCloth);
+        clothItem.setPosition(-5f,0f,-1f);
+        //clothItem.setTrans(true);
         Track trackItem = new Track(trackMesh, -1,1,5,0, PhysicalMaterial.GRAS);
         
         Bowl bowlItem = new Bowl(mesh2,PhysicalMaterial.GOLD);
         bowlItem.setPosition(5f, -3f, -1);
         bowlItem.setScale(0.5f);
+        List<Vector3f> posList = cloth1.getPosVertices();
+        float[] posArr = new float[posList.size() * 3];
+        int i = 0;
+        for (Vector3f pos : posList) {
+            posArr[i * 3] = pos.x;
+            posArr[i * 3 + 1] = pos.y;
+            posArr[i * 3 + 2] = pos.z;
+            i++;
+        }
+        List<Integer> indices1 = cloth1.getPosIndices();
+        int[] indicesArr = new int[indices1.size()];
+        indicesArr = indices1.stream().mapToInt((Integer v) -> v).toArray();
+        
+        Mesh meshCloth1 = new Mesh(posArr,indicesArr);
+        meshCloth1.setMaterial(matCloth);
+        GameItem clothItem1= new GameItem(meshCloth1);
+        clothItem1.setPosition(-5f,0f,50f);
+        clothItem1.setTrans(true);
+        clothItem1.setScale(0.1f);
         
         
-        
-        gameItems = new GameItem[]{bowlItem, bowlItem,gameItem,gameItem1,trackItem};
+        gameItems = new GameItem[]{clothItem1, bowlItem,gameItem,gameItem1,trackItem};
          
         ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
         Vector3f lightColour = new Vector3f(1, 1, 1);

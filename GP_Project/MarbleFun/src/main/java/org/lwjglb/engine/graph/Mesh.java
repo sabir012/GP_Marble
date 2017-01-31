@@ -148,8 +148,7 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, vboId);
         glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-
+        
         
 
         // Index VBO
@@ -163,6 +162,7 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
+    
     public Material getMaterial() {
         return material;
     }
@@ -233,6 +233,7 @@ public class Mesh {
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+    
     public void renderPositionsNormals() {
     	Texture texture = material.getTexture();
         if (texture != null) {
@@ -258,6 +259,7 @@ public class Mesh {
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+    
     public void renderPositions() {
     	Texture texture = material.getTexture();
         if (texture != null) {
@@ -283,39 +285,8 @@ public class Mesh {
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
-    public void renderTrans() {
-    	Texture texture = material.getTexture();
-        if (texture != null) {
-            // Activate firs texture bank
-            glActiveTexture(GL_TEXTURE0);
-            // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
-        }
-        
-        //glDepthFunc(GL_EQUAL);
-        
-       
-        // Draw the mesh
-        glBindVertexArray(getVaoId());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        
-        //Draw Transparent
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        // Restore state
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glBindVertexArray(0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-    }
+    
+    
 
     public void cleanUp() {
         glDisableVertexAttribArray(0);

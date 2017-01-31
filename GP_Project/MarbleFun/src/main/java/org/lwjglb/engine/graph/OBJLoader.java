@@ -55,7 +55,7 @@ public class OBJLoader {
         return reorderLists(vertices, textures, normals, faces, gameItemType);
     }
 
-    public static Mesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
+    private static Mesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList,
             List<Vector3f> normList, List<Face> facesList, GameItemType gameItemType) {
 
         List<Integer> indices = new ArrayList();
