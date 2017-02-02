@@ -125,7 +125,7 @@ public class Track extends GameItem {
 			float newVelocityAngle = normalAngle + phi;
 			newVelocityAngle = (float) Math.toRadians(newVelocityAngle);
 			ball.setVelocity(new Vector3f((float) Math.cos(newVelocityAngle)*v.length()*material.getDamping(), (float) -Math.sin(newVelocityAngle)*v.length()*material.getDamping(), ball.getVelocity().z));
-			ball.setPosition(ball.getPosition().x+(float) Math.cos(newVelocityAngle)*0.001f*v.length(), ball.getPosition().y+(float) Math.sin(newVelocityAngle)*0.001f*v.length(), ball.getPosition().z);
+			ball.setPosition(ball.getPosition().x+(float) Math.cos(newVelocityAngle)*0.01f*v.length(), ball.getPosition().y+(float) Math.sin(newVelocityAngle)*0.01f*v.length(), ball.getPosition().z);
 		}
 		return collision;
 	}

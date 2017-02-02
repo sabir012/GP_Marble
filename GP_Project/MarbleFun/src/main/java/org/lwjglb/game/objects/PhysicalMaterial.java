@@ -3,7 +3,7 @@ package org.lwjglb.game.objects;
 
 public enum PhysicalMaterial {
 	STEEL(7850, 0.95f, "/textures/steel.png"), GOLD(19320, 0.95f, "/textures/gold.png"), 
-    WOOD(600, 0.95f, "/textures/wood.png"), PLASTIC(950, 0.95f, "/textures/marbleRed.png"), GRAS(200, 0.7f, "/textures/grass.png"),
+    WOOD(600, 0.95f, "/textures/wood.png"), PLASTIC(950, 0.95f, "/textures/marbleRed.png"), GRAS(200, 0.85f, "/textures/grass.png"),
     GRASSIDE(200, 0.95f, "/textures/grassside.png");
      
     private final int mass; // kg per cubic metre 

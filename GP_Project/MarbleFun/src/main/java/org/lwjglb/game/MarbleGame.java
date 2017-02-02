@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.lwjglb.engine.GameEngine;
 import org.lwjglb.engine.GameItem;
 import org.lwjglb.engine.GameItemType;
 import org.lwjglb.engine.IGameLogic;
@@ -28,6 +29,7 @@ import org.lwjglb.engine.sound.SoundListener;
 import org.lwjglb.engine.sound.SoundManager;
 import org.lwjglb.engine.sound.SoundSource;
 import org.lwjglb.engine.sound.Sounds;
+import org.lwjglb.game.objects.Background;
 import org.lwjglb.game.objects.Ball;
 import org.lwjglb.game.objects.Grasspatch;
 import org.lwjglb.game.objects.NumberCube;
@@ -47,6 +49,8 @@ public class MarbleGame implements IGameLogic {
 	private final Camera camera;
 
 	private final SoundManager soundManager;
+	
+	
 
 	private GameItem[] gameItems;
 	private Track[] tracks;
@@ -100,14 +104,14 @@ public class MarbleGame implements IGameLogic {
 		mesh2.setMaterial(material);
 		trackMesh.setMaterial(material);
 
-		grass = new Grasspatch[] { new Grasspatch(-40f, -20f, -100f, 80f, 80f, 5) };
+		grass = new Grasspatch[] { new Grasspatch(-60f, -20f, -140f, 120f, 120f, 12) };
 
 		balls = new Ball[] {
 				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -18f, 12f,
 						-20),
 				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.4f, new Vector3f(), PhysicalMaterial.GOLD, -17f,
 						11.5f, -20),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.WOOD, -16f,
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.WOOD, -15.7f,
 						12.5f, -20) };
 
 		tracks = new Track[] {
@@ -135,7 +139,7 @@ public class MarbleGame implements IGameLogic {
 				new NumberCube(12, -8, -19, NumbersTex.ZERO, NumbersTex.ZERO)
 		};
 
-		gameItems = new GameItem[tracks.length + balls.length + grass.length + numberCubes.length];
+		gameItems = new GameItem[tracks.length + balls.length + grass.length + numberCubes.length+1];
 
 		for (int i = 0; i < balls.length; i++) {
 			gameItems[i] = balls[i];
@@ -149,6 +153,12 @@ public class MarbleGame implements IGameLogic {
 		for (int i = balls.length + tracks.length + grass.length; i < balls.length + tracks.length + grass.length + numberCubes.length; i++) {
 			gameItems[i] = numberCubes[i - balls.length - tracks.length - grass.length];
 		}
+		
+		Background background = new Background(0, 50, -300, 0.185f, 1920, 1080);
+		for (int i = gameItems.length-1; i >0 ; i--) {
+			gameItems[i] = gameItems[i-1];
+		}
+		gameItems[0] = background;
 
 		ambientLight = new Vector3f(0.6f, 0.6f, 0.6f);
 		Vector3f lightColour = new Vector3f(1, 1, 1);
@@ -188,22 +198,25 @@ public class MarbleGame implements IGameLogic {
 
 	@Override
 	public void input(Window window, MouseInput mouseInput) {
-		cameraInc.set(0, 0, 0);
-		if (window.isKeyPressed(GLFW_KEY_W)) {
-			cameraInc.z = -1;
-		} else if (window.isKeyPressed(GLFW_KEY_S)) {
-			cameraInc.z = 1;
+		if (GameEngine.ENABLECAMERA) {
+			cameraInc.set(0, 0, 0);
+			if (window.isKeyPressed(GLFW_KEY_W)) {
+				cameraInc.z = -1;
+			} else if (window.isKeyPressed(GLFW_KEY_S)) {
+				cameraInc.z = 1;
+			}
+			if (window.isKeyPressed(GLFW_KEY_A)) {
+				cameraInc.x = -1;
+			} else if (window.isKeyPressed(GLFW_KEY_D)) {
+				cameraInc.x = 1;
+			}
+			if (window.isKeyPressed(GLFW_KEY_Z)) {
+				cameraInc.y = -1;
+			} else if (window.isKeyPressed(GLFW_KEY_X)) {
+				cameraInc.y = 1;
+			}
 		}
-		if (window.isKeyPressed(GLFW_KEY_A)) {
-			cameraInc.x = -1;
-		} else if (window.isKeyPressed(GLFW_KEY_D)) {
-			cameraInc.x = 1;
-		}
-		if (window.isKeyPressed(GLFW_KEY_Z)) {
-			cameraInc.y = -1;
-		} else if (window.isKeyPressed(GLFW_KEY_X)) {
-			cameraInc.y = 1;
-		} else if (window.isKeyPressed(GLFW_KEY_B)) { // Working period 3
+		if (window.isKeyPressed(GLFW_KEY_B)) { // Working period 3
 														// seconds
 			try {
 				updateActive = false;
@@ -215,7 +228,7 @@ public class MarbleGame implements IGameLogic {
 				if (secondsBetween > 5) {
 					preRunDate = date;
 					Ball ball = new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(),
-							PhysicalMaterial.STEEL, -18f, 12f, -20);
+							PhysicalMaterial.STEEL, -17.5f, 12f, -20);
 
 					Ball[] newBalls = new Ball[balls.length + 1];
 					newBalls[newBalls.length - 1] = ball;
@@ -274,7 +287,7 @@ public class MarbleGame implements IGameLogic {
 				}
 				
 				Vector3f position = balls[i].getPosition();
-				if(position.x>=-14 && position.x<=-12.5 && position.y<-11){
+				if(position.x>=-14 && position.x<=-12.5 && position.y<=-11.5F){
 					if(!this.scoredBalls.contains(i)){
 						setScore(score+=1);
 						scoredBalls.add(i);
