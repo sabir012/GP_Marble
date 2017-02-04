@@ -104,14 +104,14 @@ public class MarbleGame implements IGameLogic {
 		mesh2.setMaterial(material);
 		trackMesh.setMaterial(material);
 
-		grass = new Grasspatch[] { new Grasspatch(-60f, -20f, -140f, 120f, 120f, 12) };
+		grass = new Grasspatch[] { new Grasspatch(-60f, -20f, -140f, 120f, 120f, 8) };
 
 		balls = new Ball[] {
 				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.STEEL, -18f, 12f,
 						-20),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.4f, new Vector3f(), PhysicalMaterial.GOLD, -17f,
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.35f, new Vector3f(), PhysicalMaterial.GOLD, -16f,
 						11.5f, -20),
-				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.3f, new Vector3f(), PhysicalMaterial.WOOD, -15.7f,
+				new Ball(OBJLoader.loadMesh(GameItemType.BALL), 0.39f, new Vector3f(), PhysicalMaterial.WOOD, -15f,
 						12.5f, -20) };
 
 		tracks = new Track[] {
@@ -122,7 +122,7 @@ public class MarbleGame implements IGameLogic {
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 15f, 12f, 16f, -1f, PhysicalMaterial.PLASTIC),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 8f, 0f, 18f, 3f, PhysicalMaterial.PLASTIC),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -6f, 0f, 4, 0f, PhysicalMaterial.STEEL),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -14f, 3f, -6f, 0f, PhysicalMaterial.WOOD),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -14f, 3f, -5.5f, 0f, PhysicalMaterial.WOOD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -14f, 9f, -13f, 0f, PhysicalMaterial.PLASTIC),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 6f, -3, 16f, -3, PhysicalMaterial.GOLD),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), 13f, -6, 17.5f, 2.5f, PhysicalMaterial.WOOD),
@@ -130,8 +130,8 @@ public class MarbleGame implements IGameLogic {
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -10f, -7.5f, 0f, -6, PhysicalMaterial.GOLD),
 				// bucket
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -12.5f, -12f, -9.5f, -7.5f, PhysicalMaterial.GRAS),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -15.5f, -8, -14f, -11, PhysicalMaterial.GRAS),
-				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -16f, 0, -15.5f, -8, PhysicalMaterial.PLASTIC),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -16f, -7.5f, -14f, -11, PhysicalMaterial.GRAS),
+				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -16f, 0, -15.5f, -8.5f, PhysicalMaterial.PLASTIC),
 				new Track(OBJLoader.loadMesh(GameItemType.TRACK), -17f, 0, -11f, 0, PhysicalMaterial.PLASTIC)};
 		
 		numberCubes = new NumberCube[] {
@@ -268,7 +268,7 @@ public class MarbleGame implements IGameLogic {
 				camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 			}
 
-			float windstrength = 0.2f;
+			float windstrength = 1.5f;
 			for (Grasspatch grass : grass) {
 				grass.animate(windstrength, interval);
 			}
@@ -287,7 +287,7 @@ public class MarbleGame implements IGameLogic {
 				}
 				
 				Vector3f position = balls[i].getPosition();
-				if(position.x>=-14 && position.x<=-12.5 && position.y<=-11.5F){
+				if(position.x>=-14 && position.x<=-12.5 && position.y<=-11.3F){
 					if(!this.scoredBalls.contains(i)){
 						setScore(score+=1);
 						scoredBalls.add(i);
